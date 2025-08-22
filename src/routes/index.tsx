@@ -5,6 +5,8 @@ import Error from "@/pages/Error";
 import Faq from "@/pages/Faq";
 import Features from "@/pages/Features";
 import Home from "@/pages/Home";
+import Login from "@/pages/Login";
+import Register from "@/pages/Register";
 import { createBrowserRouter } from "react-router";
 
 export const routes = createBrowserRouter([
@@ -38,6 +40,14 @@ export const routes = createBrowserRouter([
       {
         path: "faq",
         Component: Faq,
+      },
+      {
+        path: "sign-in",
+        Component: Login,
+      },
+      {
+        path: "sign-up",
+        Component: Register,
       },
     ],
   },

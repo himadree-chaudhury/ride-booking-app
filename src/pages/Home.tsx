@@ -1,4 +1,3 @@
-import Component from "@/components/comp-577";
 import Heading from "@/components/modules/common/Heading";
 import Hero from "@/components/modules/Home/Hero";
 import Offers from "@/components/modules/Home/Offers";
