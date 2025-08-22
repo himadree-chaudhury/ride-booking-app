@@ -1,6 +1,7 @@
 import App from "@/App";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
+import Error from "@/pages/Error";
 import Faq from "@/pages/Faq";
 import Features from "@/pages/Features";
 import Home from "@/pages/Home";
@@ -10,10 +11,17 @@ export const routes = createBrowserRouter([
   {
     path: "/",
     Component: App,
+    errorElement: <Error />,
     children: [
+      {
+        path: "",
+        Component: Home,
+        index: true,
+      },
       {
         path: "home",
         Component: Home,
+        index: true,
       },
       {
         path: "about",
