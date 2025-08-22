@@ -38,7 +38,7 @@ const Testimonials = () => {
         {testimonials.map((t, index) => (
           <div
             key={index}
-            className="mx-6 my-8 max-w-xs flex-shrink-0 rounded-2xl p-6 shadow-md"
+            className="mx-6 my-8 max-w-xs flex-shrink-0 rounded-2xl p-6 shadow-md border"
           >
             <p className="mb-4 text-gray-700">“{t.text}”</p>
             <div className="flex items-center gap-5">

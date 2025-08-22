@@ -1,3 +1,4 @@
+import Component from "@/components/comp-577";
 import Heading from "@/components/modules/common/Heading";
 import Hero from "@/components/modules/Home/Hero";
 import Offers from "@/components/modules/Home/Offers";
@@ -7,8 +8,8 @@ import Testimonials from "@/components/modules/Home/Testimonials";
 
 const Home = () => {
   return (
-      <div>
-          
+    <div>
+      {/* <Component/> */}
       <section className="mb-10">
         <Hero />
       </section>
@@ -23,7 +24,7 @@ const Home = () => {
 
       <Heading
         title={"HOW IT WORK"}
-        heading={"BOOK With Following Steps"}
+        heading={"Book With Following Steps"}
         description={
           "Easily find the perfect car, set your pick-up time, and enjoy seamless delivery to your location"
         }

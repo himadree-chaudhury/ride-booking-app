@@ -16,7 +16,7 @@ const Navbar = () => {
           { label: "Features", href: "/features" },
           { label: "Contact", href: "/contact" },
           { label: "FAQ", href: "/faq" },
-          { label: "Sign In", href: "/sign-in" },
+          { label: location.pathname === "/sign-in" ? "Sign Out" : "Sign In", href: location.pathname === "/sign-in" ? "/sign-out" : "/sign-in" },
         ]}
         activeHref={location.pathname === "/" ? "/home" : location.pathname}
         className="custom-nav"
@@ -27,7 +27,6 @@ const Navbar = () => {
         pillTextColor="#000000"
         initialLoadAnimation={false}
       />
-      {/* <ModeToggle /> */}
     </div>
   );
 };
