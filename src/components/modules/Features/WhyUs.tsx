@@ -45,7 +45,7 @@ const WhyUs = () => {
       <motion.div
         className="card flex-centric gap-5 p-2"
         initial="offscreenLeft"
-        whileInView="onscreen"
+        animate="onscreen"
         whileHover="hover"
         viewport={{ once: false, amount: 0.2 }}
         variants={cardVariants}
@@ -64,7 +64,7 @@ const WhyUs = () => {
       <motion.div
         className="card flex-centric gap-5 p-2"
         initial="offscreenLeft"
-        whileInView="onscreen"
+        animate="onscreen"
         whileHover="hover"
         viewport={{ once: false, amount: 0.2 }}
         variants={cardVariants}
@@ -83,7 +83,7 @@ const WhyUs = () => {
       <motion.div
         className="card flex-centric gap-5 p-2"
         initial="offscreenLeft"
-        whileInView="onscreen"
+        animate="onscreen"
         whileHover="hover"
         viewport={{ once: false, amount: 0.2 }}
         variants={cardVariants}
@@ -103,7 +103,7 @@ const WhyUs = () => {
       <motion.div
         className="card flex-centric gap-5 p-2"
         initial="offscreenRight" // Start animation from right
-        whileInView="onscreen"
+        animate="onscreen"
         whileHover="hover"
         viewport={{ once: false, amount: 0.2 }}
         variants={cardVariants}
@@ -122,7 +122,7 @@ const WhyUs = () => {
       <motion.div
         className="card flex-centric gap-5 p-2"
         initial="offscreenRight"
-        whileInView="onscreen"
+        animate="onscreen"
         whileHover="hover"
         viewport={{ once: false, amount: 0.2 }}
         variants={cardVariants}
@@ -141,7 +141,7 @@ const WhyUs = () => {
       <motion.div
         className="card flex-centric gap-5 p-2"
         initial="offscreenRight"
-        whileInView="onscreen"
+        animate="onscreen"
         whileHover="hover"
         viewport={{ once: false, amount: 0.2 }}
         variants={cardVariants}

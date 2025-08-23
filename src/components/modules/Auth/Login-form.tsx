@@ -9,26 +9,54 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { useLoginMutation } from "@/redux/features/auth/auth.api";
+import { useLoginMutation } from "@/redux/features/auth.api";
+import { userApi } from "@/redux/features/user.api";
+import { useAppDispatch } from "@/redux/store";
+import type { IResponseError } from "@/types/error-type";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
+import { toast } from "sonner";
+import z from "zod";
+
+// * Login form validation using Zod
+const loginSchema = z.object({
+  email: z.email("Please enter a valid email"),
+  password: z.string().min(1, "Please enter a password"),
+});
 
 export function LoginForm({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
+  // *Form type check-up via Zod & setting default values
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const [login] = useLoginMutation();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-    const form = useForm();
-    const [login] = useLoginMutation()
-    const onSubmit: SubmitHandler<FieldValues> = async (data ) => {
-        console.log(data);
-        try {
-            const response = await login(data).unwrap();
-            console.log(response);
-        } catch (error) {
-            console.error(error);
-        }
-    };
+
+  // *Form submission handler
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    const toastId = toast.loading("Creating user...");
+    console.log(data);
+    try {
+      const response = await login(data).unwrap();
+      console.log(response);
+      toast.success("User logged in successfully", { id: toastId });
+      dispatch(userApi.util.invalidateTags(["User"]));
+      navigate("/home");
+    } catch (error: unknown) {
+      const err = (error as unknown as { data: IResponseError }).data;
+      toast.error(`${err.status}: ${err.message}`, { id: toastId });
+    }
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -42,11 +70,7 @@ export function LoginForm({
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="john@example.com"
-                      {...field}
-                      value={field.value || ""}
-                    />
+                    <Input placeholder="john@example.com" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -60,12 +84,7 @@ export function LoginForm({
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="********"
-                      {...field}
-                      value={field.value || ""}
-                    />
+                    <Input type="password" placeholder="********" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -9,31 +9,39 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import Password from "@/components/ui/Password";
+import PasswordStrength from "@/components/ui/PasswordStrength";
 import { cn } from "@/lib/utils";
+import { useRegisterMutation } from "@/redux/features/user.api";
+import type { IResponseError } from "@/types/error-type";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Password from "@/components/ui/Password";
-// import { useRegisterMutation } from "@/redux/features/auth/auth.api";
 import { toast } from "sonner";
+import { z } from "zod";
 
+// * Register form validation using Zod
 const registerSchema = z
   .object({
     name: z
-      .string()
-      .min(3, {
-        error: "Name is too short",
+      .string("Please enter your name")
+      .min(2, "Name must be at least 2 characters long")
+      .max(100, "Name must be at most 100 characters long"),
+    email: z.email("Please enter a valid email address"),
+    password: z
+      .string("Please enter a password")
+      .min(8, "Password must be at least 8 characters long")
+      .regex(/[a-z]/, {
+        message: "Password must contain at least one lowercase letter",
       })
-      .max(50),
-    email: z.email(),
-    password: z.string().min(8, { error: "Password is too short" }),
-    confirmPassword: z
-      .string()
-      .min(8, { error: "Confirm Password is too short" }),
+      .regex(/[A-Z]/, {
+        message: "Password must contain at least one uppercase letter",
+      })
+      .regex(/[0-9]/, { message: "Password must contain at least one number" }),
+    confirmPassword: z.string("Please confirm your password"),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Password do not match",
+    message: "Password does not match",
     path: ["confirmPassword"],
   });
 
@@ -41,9 +49,7 @@ export function RegisterForm({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-//   const [register] = useRegisterMutation();
-  const navigate = useNavigate();
-
+  // *Form type check-up via Zod & setting default values
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -54,23 +60,26 @@ export function RegisterForm({
     },
   });
 
+  const [register] = useRegisterMutation();
+  const navigate = useNavigate();
+
+  // *Form submission handler
   const onSubmit = async (data: z.infer<typeof registerSchema>) => {
+    const toastId = toast.loading("Creating user...");
     const userInfo = {
       name: data.name,
       email: data.email,
       password: data.password,
-      };
-      
-      console.log(userInfo);
+    };
 
-    // try {
-    //   const result = await register(userInfo).unwrap();
-    //   console.log(result);
-    //   toast.success("User created successfully");
-    //   navigate("/verify");
-    // } catch (error) {
-    //   console.error(error);
-    // }
+    try {
+      await register(userInfo);
+      toast.success("User created successfully", { id: toastId });
+      navigate("/sign-in");
+    } catch (error: unknown) {
+      const err = (error as unknown as { data: IResponseError }).data;
+      toast.error(`${err.status}: ${err.message}`, { id: toastId });
+    }
   };
 
   return (
@@ -121,7 +130,10 @@ export function RegisterForm({
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Password {...field} />
+                    <PasswordStrength
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
                   </FormControl>
                   <FormDescription className="sr-only">
                     This is your public display name.
@@ -169,7 +181,7 @@ export function RegisterForm({
 
       <div className="text-center text-sm">
         Already have an account?{" "}
-        <Link to="/login" className="underline underline-offset-4">
+        <Link to="/sign-in" className="underline underline-offset-4">
           Login
         </Link>
       </div>

@@ -20,10 +20,10 @@ const Offers = () => {
     new Date(),
   );
 
-  // *Calculate The Last Day Of April And Days Remaining
-  const lastAprilDate = endOfMonth(new Date(new Date().getFullYear(), 3));
-  const lastDayOfApril = format(lastAprilDate, "MMMM d, yyyy");
-  const daysLeftForApril = differenceInDays(lastAprilDate, new Date());
+  // *Calculate The Last Day Of September And Days Remaining
+  const lastSeptemberDate = endOfMonth(new Date(new Date().getFullYear(), 8));
+  const lastDayOfSeptember = format(lastSeptemberDate, "MMMM d, yyyy");
+  const daysLeftForSeptember = differenceInDays(lastSeptemberDate, new Date());
 
   // *Get Tomorrow's Date
   const formattedTomorrow = format(addDays(new Date(), 1), "MMMM d, yyyy");
@@ -95,7 +95,7 @@ const Offers = () => {
         whileHover="hover"
       >
         <motion.div
-          className="flex flex-centric justify-between rounded-t-lg p-2 **:text-white"
+          className="flex-centric flex justify-between rounded-t-lg p-2 **:text-white"
           variants={backgroundGradient(0)}
         >
           <div>
@@ -129,13 +129,13 @@ const Offers = () => {
         whileHover="hover"
       >
         <motion.div
-          className="flex flex-centric justify-between rounded-t-lg p-2 **:text-white"
+          className="flex-centric flex justify-between rounded-t-lg p-2 **:text-white"
           variants={backgroundGradient(0.5)}
         >
           <div>
             <p className="font-semibold">Limited</p>
             <h1 className="py-2 text-4xl font-extrabold">$30 OFF !</h1>
-            <p>Only {daysLeftForApril} days left...</p>
+            <p>Only {daysLeftForSeptember} days left...</p>
           </div>
           <motion.div
             className="w-32 -rotate-12"
@@ -149,7 +149,7 @@ const Offers = () => {
             <h3>Luxury cars this winter!</h3>
             <h3>#2</h3>
           </div>
-          <p className="mb-5">{lastDayOfApril}</p>
+          <p className="mb-5">{lastDayOfSeptember}</p>
           <Button variant="outline">More...</Button>
         </div>
       </motion.div>
@@ -163,7 +163,7 @@ const Offers = () => {
         whileHover="hover"
       >
         <motion.div
-          className="flex flex-centric justify-between rounded-t-lg p-2 **:text-white"
+          className="flex-centric flex justify-between rounded-t-lg p-2 **:text-white"
           variants={backgroundGradient(1)}
         >
           <div>

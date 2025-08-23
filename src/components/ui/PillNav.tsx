@@ -6,6 +6,7 @@ export type PillNavItem = {
   label: string;
   href: string;
   ariaLabel?: string;
+  onClick?: () => void; // Add onClick to PillNavItem
 };
 
 export interface PillNavProps {
@@ -391,6 +392,7 @@ const PillNav: React.FC<PillNavProps> = ({
                       aria-label={item.ariaLabel || item.label}
                       onMouseEnter={() => handleEnter(i)}
                       onMouseLeave={() => handleLeave(i)}
+                      onClick={item.onClick} // Add onClick handler
                     >
                       {PillContent}
                     </Link>
@@ -403,6 +405,7 @@ const PillNav: React.FC<PillNavProps> = ({
                       aria-label={item.ariaLabel || item.label}
                       onMouseEnter={() => handleEnter(i)}
                       onMouseLeave={() => handleLeave(i)}
+                      onClick={item.onClick} // Add onClick handler
                     >
                       {PillContent}
                     </a>
@@ -471,7 +474,10 @@ const PillNav: React.FC<PillNavProps> = ({
                     style={defaultStyle}
                     onMouseEnter={hoverIn}
                     onMouseLeave={hoverOut}
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      item.onClick?.(); // Call onClick for mobile menu
+                    }}
                   >
                     {item.label}
                   </Link>
@@ -482,7 +488,10 @@ const PillNav: React.FC<PillNavProps> = ({
                     style={defaultStyle}
                     onMouseEnter={hoverIn}
                     onMouseLeave={hoverOut}
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      item.onClick?.(); // Call onClick for mobile menu
+                    }}
                   >
                     {item.label}
                   </a>

@@ -6,27 +6,27 @@ import Marquee from "react-fast-marquee";
 
 const testimonials = [
   {
-    name: "Ayesha Rahman",
-    text: "Cabsy made my daily commute so much easier. The rides are safe, quick, and affordable.",
-    role: "Student, Dhaka University",
+    name: "Mehedi Chowdhury",
+    text: "Transparent pricing and on-time pickups. Exactly what I needed.",
+    role: "Entrepreneur",
     img: face1,
-  },
-  {
-    name: "Samiul Hasan",
-    text: "I love how smooth the booking experience is. The app feels intuitive and reliable.",
-    role: "Software Engineer",
-    img: face2,
   },
   {
     name: "Farzana Akter",
     text: "The drivers are polite and professional. Definitely my go-to ride app now.",
     role: "Marketing Executive",
+    img: face2,
+  },
+  {
+    name: "Samiul Hasan",
+    text: "I love how smooth the booking experience is. The app feels intuitive and reliable.",
+    role: "Software Engineer",
     img: face3,
   },
   {
-    name: "Mehedi Chowdhury",
-    text: "Transparent pricing and on-time pickups. Exactly what I needed.",
-    role: "Entrepreneur",
+    name: "Ayesha Rahman",
+    text: "Cabsy made my daily commute so much easier. The rides are safe, quick, and affordable.",
+    role: "Student, Dhaka University",
     img: face4,
   },
 ];
@@ -38,7 +38,7 @@ const Testimonials = () => {
         {testimonials.map((t, index) => (
           <div
             key={index}
-            className="mx-6 my-8 max-w-xs flex-shrink-0 rounded-2xl p-6 shadow-md border"
+            className="mx-6 my-8 max-w-xs flex-shrink-0 rounded-2xl border p-6 shadow-md"
           >
             <p className="mb-4 text-gray-700">“{t.text}”</p>
             <div className="flex items-center gap-5">

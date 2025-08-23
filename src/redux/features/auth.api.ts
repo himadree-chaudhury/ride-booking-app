@@ -9,11 +9,18 @@ const authApi = baseApi.injectEndpoints({
                 data: credentials,
             }),
         }),
+        getTokens: builder.query({
+            query: () => ({
+                url: "/auth/tokens",
+                method: "POST",
+            }),
+        }),
         logout: builder.mutation({
             query: () => ({
                 url: "/auth/logout",
                 method: "POST",
             }),
+            invalidatesTags: ["User"],
         }),
     }),
 })

@@ -9,7 +9,9 @@ const Register = () => {
         heading={"Create a New Account"}
         description={"Please enter your details to create a new account."}
       />
-      <RegisterForm />
+      <section className="mx-auto max-w-sm">
+        <RegisterForm />
+      </section>
     </div>
   );
 };

@@ -9,7 +9,9 @@ const Login = () => {
         heading={"Welcome Back"}
         description={"Please enter your credentials to access your account."}
       />
-      <LoginForm />
+      <section className="max-w-sm mx-auto">
+        <LoginForm />
+      </section>
     </div>
   );
 };
