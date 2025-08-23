@@ -7,8 +7,7 @@ import Testimonials from "@/components/modules/Home/Testimonials";
 
 const Home = () => {
   return (
-      <div>
-          
+    <div>
       <section className="mb-10">
         <Hero />
       </section>
@@ -23,7 +22,7 @@ const Home = () => {
 
       <Heading
         title={"HOW IT WORK"}
-        heading={"BOOK With Following Steps"}
+        heading={"Book With Following Steps"}
         description={
           "Easily find the perfect car, set your pick-up time, and enjoy seamless delivery to your location"
         }
@@ -39,7 +38,7 @@ const Home = () => {
           "Get the best and most exciting bonus today on your journey"
         }
       />
-      <section className="section-layout">
+      <section className="mb-16">
         <Offers />
       </section>
 

@@ -1,11 +1,26 @@
 import App from "@/App";
+import { UserRole } from "@/constants/role";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import Error from "@/pages/Error";
 import Faq from "@/pages/Faq";
 import Features from "@/pages/Features";
 import Home from "@/pages/Home";
-import { createBrowserRouter } from "react-router";
+import Login from "@/pages/Login";
+import Register from "@/pages/Register";
+import Booking from "@/pages/rider/Booking";
+import type { TUserRole } from "@/types/user-type";
+import authVerification from "@/utils/authVerification";
+import { generateRoutes } from "@/utils/generateRoute";
+import { lazy } from "react";
+import { createBrowserRouter, Navigate } from "react-router";
+import { adminSidebarRoutes } from "./adminSidebarRoutes";
+import { driverSidebarRoutes } from "./driverSidebarRoutes";
+import { riderSidebarRoutes } from "./riderSidebarRoutes";
+
+const DashboardLayout = lazy(
+  () => import("@/components/layout/DashboardLayout"),
+);
 
 export const routes = createBrowserRouter([
   {
@@ -39,6 +54,39 @@ export const routes = createBrowserRouter([
         path: "faq",
         Component: Faq,
       },
+      {
+        path: "sign-in",
+        Component: Login,
+      },
+      {
+        path: "sign-up",
+        Component: Register,
+      },
+      {
+        path: "booking",
+        Component: authVerification(Booking),
+      },
     ],
+  },
+  {
+    path: "/admin",
+    Component: authVerification(DashboardLayout, UserRole.ADMIN as TUserRole),
+    children: [
+      {
+        index: true,
+        element: <Navigate to="/admin/profile" />,
+      },
+      ...generateRoutes(adminSidebarRoutes),
+    ],
+  },
+  {
+    path: "/driver",
+    Component: authVerification(DashboardLayout, UserRole.DRIVER as TUserRole),
+    children: generateRoutes(driverSidebarRoutes),
+  },
+  {
+    path: "/rider",
+    Component: authVerification(DashboardLayout, UserRole.RIDER as TUserRole),
+    children: generateRoutes(riderSidebarRoutes),
   },
 ]);

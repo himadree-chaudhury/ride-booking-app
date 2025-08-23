@@ -15,7 +15,7 @@ const Heading = ({
       <motion.p
         className="font-semibold text-[#005a91]"
         initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         viewport={{ once: false, amount: 0.2 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
@@ -26,7 +26,7 @@ const Heading = ({
       {/* Heading */}
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         viewport={{ once: false, amount: 0.2 }}
         transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
@@ -38,7 +38,7 @@ const Heading = ({
       <motion.p
         className="pb-5"
         initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         viewport={{ once: false, amount: 0.2 }}
         transition={{ duration: 1, ease: "easeOut", delay: 0.4 }}

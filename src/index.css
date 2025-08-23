@@ -151,6 +151,9 @@
   .section-layout {
     @apply mx-auto max-w-screen-2xl px-3 py-5 sm:px-4 sm:py-8 lg:px-5 lg:py-12;
   }
+  .offer-layout{
+    @apply mx-auto max-w-screen-2xl xl:max-w-screen-lg px-3 py-5 sm:px-4 sm:py-8 lg:px-5 lg:py-12; 
+  }
 }
 
 @utility flex-centric {

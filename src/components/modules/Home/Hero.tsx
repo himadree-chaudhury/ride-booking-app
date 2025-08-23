@@ -2,6 +2,7 @@ import banner from "@/assets/images/cover.png";
 import underline from "@/assets/images/underline.svg";
 import { Button } from "@/components/ui/button";
 import { motion } from "motion/react";
+import { Link } from "react-router";
 
 const Hero = () => {
   return (
@@ -75,7 +76,9 @@ const Hero = () => {
             animate={{ y: [-50, 10, 0], opacity: [0, 0.2, 0.5, 0.8, 1] }}
             transition={{ delay: 2, duration: 1, ease: "easeInOut" }}
           >
-            <Button>Book Now</Button>
+            <Button>
+              <Link to="/booking">Book Now</Link>
+            </Button>
           </motion.div>
         </div>
       </div>
