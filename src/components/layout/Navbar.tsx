@@ -51,11 +51,11 @@ const Navbar = () => {
   // Add specific dashboard route for authenticated users with specific roles
   if (userData) {
     if (userData.role === UserRole.ADMIN) {
-      navItems.push({ label: "Admin Dashboard", href: "/admin-dashboard" });
+      navItems.push({ label: "Admin Dashboard", href: "/admin" });
     } else if (userData.role === UserRole.DRIVER) {
-      navItems.push({ label: "Driver Dashboard", href: "/driver-dashboard" });
+      navItems.push({ label: "Driver Dashboard", href: "/driver" });
     } else if (userData.role === UserRole.RIDER) {
-      navItems.push({ label: "My Account", href: "/account" });
+      navItems.push({ label: "My Account", href: "/rider" });
     }
   }
 

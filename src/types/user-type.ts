@@ -11,3 +11,4 @@ export interface IUser {
   updatedAt: string;
 }
 
+export type TUserRole = "ADMIN" | "RIDER" | "DRIVER";

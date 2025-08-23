@@ -15,7 +15,7 @@ import { useAppDispatch } from "@/redux/store";
 import type { IResponseError } from "@/types/error-type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -41,6 +41,8 @@ export function LoginForm({
   const [login] = useLoginMutation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/home";
 
   // *Form submission handler
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
@@ -51,7 +53,7 @@ export function LoginForm({
       console.log(response);
       toast.success("User logged in successfully", { id: toastId });
       dispatch(userApi.util.invalidateTags(["User"]));
-      navigate("/home");
+      navigate(from ? from : "/home");
     } catch (error: unknown) {
       const err = (error as unknown as { data: IResponseError }).data;
       toast.error(`${err.status}: ${err.message}`, { id: toastId });
