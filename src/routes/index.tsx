@@ -17,6 +17,7 @@ import { createBrowserRouter, Navigate } from "react-router";
 import { adminSidebarRoutes } from "./adminSidebarRoutes";
 import { driverSidebarRoutes } from "./driverSidebarRoutes";
 import { riderSidebarRoutes } from "./riderSidebarRoutes";
+import Unauthorized from "@/pages/Unauthorized";
 
 const DashboardLayout = lazy(
   () => import("@/components/layout/DashboardLayout"),
@@ -65,6 +66,10 @@ export const routes = createBrowserRouter([
       {
         path: "booking",
         Component: authVerification(Booking),
+      },
+      {
+        path: "unauthorized",
+        Component: Unauthorized,
       },
     ],
   },
