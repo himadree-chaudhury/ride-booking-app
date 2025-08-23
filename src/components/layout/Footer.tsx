@@ -7,7 +7,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="section-layout">
+    <div className="section-layout container">
       {/* Top Section With Logo And Social Media Links */}
       <div className="sm:flex-centric py-5 sm:justify-between">
         <div className="flex-centric mb-3 gap-3 sm:mb-0">

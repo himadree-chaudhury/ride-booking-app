@@ -7,7 +7,8 @@ import {
   format,
   nextFriday,
 } from "date-fns";
-import { motion } from "motion/react";
+import { motion, easeInOut } from "framer-motion";
+import type { Variants } from "framer-motion"; // Type-only import for Variants
 import { BiSolidOffer } from "react-icons/bi";
 import { MdDiscount } from "react-icons/md";
 import { RiMoneyDollarCircleFill } from "react-icons/ri";
@@ -29,7 +30,7 @@ const Offers = () => {
   const formattedTomorrow = format(addDays(new Date(), 1), "MMMM d, yyyy");
 
   // *Animation Variants
-  const cardVariants1 = {
+  const cardVariants1: Variants = {
     initial: { y: 0 },
     animate: {
       y: [0, -10, 0],
@@ -37,7 +38,7 @@ const Offers = () => {
     },
     hover: { scale: 1.05, transition: { duration: 0.3 } },
   };
-  const cardVariants2 = {
+  const cardVariants2: Variants = {
     initial: { y: 0 },
     animate: {
       y: [0, 10, 0],
@@ -50,7 +51,7 @@ const Offers = () => {
     },
     hover: { scale: 1.05, transition: { duration: 0.3 } },
   };
-  const cardVariants3 = {
+  const cardVariants3: Variants = {
     initial: { y: 0 },
     animate: {
       y: [0, -10, 0],
@@ -73,29 +74,27 @@ const Offers = () => {
         "linear-gradient(90deg, #845ae6, #5429b3)",
       ],
       transition: {
-        background: {
-          duration: 5,
-          delay,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "linear",
-        },
+        duration: 5,
+        delay,
+        repeat: Infinity,
+        repeatType: "reverse" as const, // Ensure correct typing
+        ease: easeInOut,
       },
     },
   });
 
   return (
-    <div className="*:border-text-secondary-dark space-y-4 *:rounded-lg *:border md:relative *:md:w-[45%]">
+    <div className="space-y-4">
       {/* Offer - 1: Unlimited 12% OFF */}
       <motion.div
-        className="md:relative md:top-10"
+        className="rounded-lg border md:relative md:top-10 md:w-[45%]"
         variants={cardVariants1}
         initial="initial"
         animate="animate"
         whileHover="hover"
       >
         <motion.div
-          className="flex-centric flex justify-between rounded-t-lg p-2 **:text-white"
+          className="flex justify-between rounded-t-lg p-2 text-white"
           variants={backgroundGradient(0)}
         >
           <div>
@@ -111,7 +110,7 @@ const Offers = () => {
           </motion.div>
         </motion.div>
         <div className="mb-2 p-2">
-          <div className="flex-centric justify-between">
+          <div className="flex items-center justify-between">
             <h3>Get on every Friday!</h3>
             <h3>#1</h3>
           </div>
@@ -122,14 +121,14 @@ const Offers = () => {
 
       {/* Offer - 2: Limited $30 OFF */}
       <motion.div
-        className="md:absolute md:bottom-10 md:left-[30%]"
+        className="rounded-lg border md:absolute md:left-[30%] md:w-[45%]"
         variants={cardVariants2}
         initial="initial"
         animate="animate"
         whileHover="hover"
       >
         <motion.div
-          className="flex-centric flex justify-between rounded-t-lg p-2 **:text-white"
+          className="flex justify-between rounded-t-lg p-2 text-white"
           variants={backgroundGradient(0.5)}
         >
           <div>
@@ -145,7 +144,7 @@ const Offers = () => {
           </motion.div>
         </motion.div>
         <div className="mb-2 p-2">
-          <div className="flex-centric justify-between">
+          <div className="flex items-center justify-between">
             <h3>Luxury cars this winter!</h3>
             <h3>#2</h3>
           </div>
@@ -156,14 +155,14 @@ const Offers = () => {
 
       {/* Offer - 3: Limited $99/day */}
       <motion.div
-        className="md:relative md:bottom-66 md:left-[55%]"
+        className="rounded-lg border md:relative md:bottom-66 md:left-[55%] md:w-[45%]"
         variants={cardVariants3}
         initial="initial"
         animate="animate"
         whileHover="hover"
       >
         <motion.div
-          className="flex-centric flex justify-between rounded-t-lg p-2 **:text-white"
+          className="flex justify-between rounded-t-lg p-2 text-white"
           variants={backgroundGradient(1)}
         >
           <div>
@@ -179,7 +178,7 @@ const Offers = () => {
           </motion.div>
         </motion.div>
         <div className="p-2">
-          <div className="flex-centric justify-between">
+          <div className="flex items-center justify-between">
             <h3>#3</h3>
             <h3>Get on family package!</h3>
           </div>

@@ -1,5 +1,4 @@
 import App from "@/App";
-import DashboardLayout from "@/components/layout/DashboardLayout";
 import { UserRole } from "@/constants/role";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
@@ -12,7 +11,16 @@ import Register from "@/pages/Register";
 import Booking from "@/pages/rider/Booking";
 import type { TUserRole } from "@/types/user-type";
 import authVerification from "@/utils/authVerification";
-import { createBrowserRouter } from "react-router";
+import { generateRoutes } from "@/utils/generateRoute";
+import { lazy } from "react";
+import { createBrowserRouter, Navigate } from "react-router";
+import { adminSidebarRoutes } from "./adminSidebarRoutes";
+import { driverSidebarRoutes } from "./driverSidebarRoutes";
+import { riderSidebarRoutes } from "./riderSidebarRoutes";
+
+const DashboardLayout = lazy(
+  () => import("@/components/layout/DashboardLayout"),
+);
 
 export const routes = createBrowserRouter([
   {
@@ -63,16 +71,22 @@ export const routes = createBrowserRouter([
   {
     path: "/admin",
     Component: authVerification(DashboardLayout, UserRole.ADMIN as TUserRole),
-    children: [{}],
+    children: [
+      {
+        index: true,
+        element: <Navigate to="/admin/profile" />,
+      },
+      ...generateRoutes(adminSidebarRoutes),
+    ],
   },
   {
     path: "/driver",
     Component: authVerification(DashboardLayout, UserRole.DRIVER as TUserRole),
-    children: [{}],
+    children: generateRoutes(driverSidebarRoutes),
   },
   {
     path: "/rider",
     Component: authVerification(DashboardLayout, UserRole.RIDER as TUserRole),
-    children: [{}],
+    children: generateRoutes(riderSidebarRoutes),
   },
 ]);

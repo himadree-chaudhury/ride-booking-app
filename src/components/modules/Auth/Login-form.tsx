@@ -46,7 +46,7 @@ export function LoginForm({
 
   // *Form submission handler
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    const toastId = toast.loading("Creating user...");
+    const toastId = toast.loading("Signing in user...");
     console.log(data);
     try {
       const response = await login(data).unwrap();
