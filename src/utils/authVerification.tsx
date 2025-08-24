@@ -5,7 +5,7 @@ import { Navigate, useLocation } from "react-router";
 
 const authVerification = (
   Component: ComponentType,
-  requiredRole?: TUserRole,
+  requiredRole: TUserRole,
 ) => {
   return function AuthenticatedComponent() {
     const { data, isLoading } = useGetUserQuery(undefined);

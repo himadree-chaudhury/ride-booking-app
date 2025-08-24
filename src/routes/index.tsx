@@ -65,7 +65,7 @@ export const routes = createBrowserRouter([
       },
       {
         path: "booking",
-        Component: authVerification(Booking),
+        Component: authVerification(Booking, UserRole.RIDER as TUserRole),
       },
       {
         path: "unauthorized",
@@ -87,11 +87,17 @@ export const routes = createBrowserRouter([
   {
     path: "/driver",
     Component: authVerification(DashboardLayout, UserRole.DRIVER as TUserRole),
-    children: generateRoutes(driverSidebarRoutes),
+    children: [{
+        index: true,
+        element: <Navigate to="/driver/profile" />,
+    },...generateRoutes(driverSidebarRoutes)],
   },
   {
     path: "/rider",
     Component: authVerification(DashboardLayout, UserRole.RIDER as TUserRole),
-    children: generateRoutes(riderSidebarRoutes),
+    children: [{
+      index: true,
+      element: <Navigate to="/rider/profile" />,
+    }, ...generateRoutes(riderSidebarRoutes)],
   },
 ]);
