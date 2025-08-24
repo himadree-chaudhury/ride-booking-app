@@ -1,3 +1,4 @@
+import LoadingSpinner from "@/components/layout/LoadingSpinner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,7 +23,7 @@ import {
 import { Link } from "react-router";
 
 const Profile = () => {
-  const { data } = useGetUserQuery(undefined);
+  const { data, isLoading } = useGetUserQuery(undefined);
   const user: IUser = data?.data;
 
   const getRoleVariant = (role: TUserRole) => {
@@ -39,14 +40,14 @@ const Profile = () => {
   };
 
   const getStatusBadge = (user: IUser) => {
-    if (user.isBlocked) {
+    if (user?.isBlocked) {
       return (
         <Badge variant="destructive" className="flex items-center gap-1">
           <Ban className="h-3 w-3" /> Blocked
         </Badge>
       );
     }
-    if (user.isVerified) {
+    if (user?.isVerified) {
       return (
         <Badge variant="outline" className="flex items-center gap-1">
           <CheckCircle className="h-3 w-3" /> Verified
@@ -63,6 +64,10 @@ const Profile = () => {
       day: "numeric",
     });
   };
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <Card className="mx-auto w-full max-w-2xl">
@@ -84,8 +89,13 @@ const Profile = () => {
         <div className="flex items-center gap-4">
           <Avatar className="h-20 w-20">
             <AvatarImage src={user?.picture} alt={user?.name} />
-            <AvatarFallback className="text-lg">
-              {user?.name?.charAt(0)}
+            <AvatarFallback className="text-lg font-bold">
+              {user?.name
+                .split(" ")
+                .map((part) => part[0])
+                .join("")
+                .toUpperCase()
+                .slice(0, 2)}
             </AvatarFallback>
           </Avatar>
 

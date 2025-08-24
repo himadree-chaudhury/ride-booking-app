@@ -1,0 +1,23 @@
+import { baseApi } from "@/redux/baseApi";
+
+export const driverApi = baseApi.injectEndpoints({
+  endpoints: (builder) => ({
+    createDriver: builder.mutation({
+      query: (riderData) => ({
+        url: "/driver/register",
+        method: "POST",
+        data: riderData,
+        }),
+        invalidatesTags: ["Driver"],
+    }),
+    getDriver: builder.query({
+      query: () => ({
+        url: "/driver/me",
+        method: "GET",
+      }),
+      providesTags: ["Driver"],
+    }),
+  }),
+});
+
+export const { useCreateDriverMutation, useGetDriverQuery } = driverApi;

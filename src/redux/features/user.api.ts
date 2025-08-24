@@ -15,6 +15,7 @@ export const userApi = baseApi.injectEndpoints({
         method: "PATCH",
         data: userData,
       }),
+      invalidatesTags: ["User"],
     }),
     verifyRequest: builder.mutation({
       query: () => ({

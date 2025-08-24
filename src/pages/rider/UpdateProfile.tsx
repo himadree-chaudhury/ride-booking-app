@@ -38,20 +38,21 @@ export function UpdateProfile({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  // *Form type check-up via Zod & setting default values
-  const form = useForm<z.infer<typeof updateSchema>>({
-    resolver: zodResolver(updateSchema),
-    defaultValues: {
-      name: "",
-      phone: "",
-      picture: "",
-    },
-  });
-
   const [updateUser] = useUpdateUserMutation();
   const { data } = useGetUserQuery(undefined);
   const user = data?.data;
   const navigate = useNavigate();
+  
+  // *Form type check-up via Zod & setting default values
+  const form = useForm<z.infer<typeof updateSchema>>({
+    resolver: zodResolver(updateSchema),
+    defaultValues: {
+      name: user?.name,
+      phone: user?.phone,
+      picture: user?.picture,
+    },
+  });
+
 
   // *Form submission handler
   const onSubmit = async (data: z.infer<typeof updateSchema>) => {

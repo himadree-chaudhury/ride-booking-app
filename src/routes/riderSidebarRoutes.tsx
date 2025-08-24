@@ -2,7 +2,7 @@ import Analytics from "@/pages/rider/Analytics";
 import Booking from "@/pages/rider/Booking";
 import Emergency from "@/pages/rider/Emergency";
 import Profile from "@/pages/rider/Profile";
-import RequestToBeDriver from "@/pages/rider/RequestToBeDriver";
+import { RequestToBeDriver } from "@/pages/rider/RequestToBeDriver";
 import RideHistory from "@/pages/rider/RideHistory";
 import { UpdateProfile } from "@/pages/rider/UpdateProfile";
 import VerifyProfile from "@/pages/rider/VerifyProfile";
