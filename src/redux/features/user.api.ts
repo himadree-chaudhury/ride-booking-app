@@ -10,23 +10,23 @@ export const userApi = baseApi.injectEndpoints({
       }),
     }),
     updateUser: builder.mutation({
-      query: (data) => ({
+      query: (userData) => ({
         url: "/user/update",
         method: "PATCH",
-        data: data,
+        data: userData,
       }),
     }),
-    verifyRequest: builder.query({
+    verifyRequest: builder.mutation({
       query: () => ({
-        url: "/user/verify",
-        method: "GET",
+        url: "/user/verify-request",
+        method: "POST",
       }),
     }),
     verifyUser: builder.mutation({
-      query: (data) => ({
+      query: (otp) => ({
         url: "/user/verify",
         method: "POST",
-        data: data,
+        data: otp,
       }),
     }),
     getUser: builder.query({
@@ -42,7 +42,7 @@ export const userApi = baseApi.injectEndpoints({
 export const {
   useRegisterMutation,
   useUpdateUserMutation,
-  useVerifyRequestQuery,
+  useVerifyRequestMutation,
   useVerifyUserMutation,
   useGetUserQuery,
 } = userApi;

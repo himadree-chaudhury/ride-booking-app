@@ -16,7 +16,6 @@ import {
   useMap,
   useMapEvents,
 } from "react-leaflet";
-import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import z from "zod";
 import Confirmation from "./Confirmation";
@@ -255,7 +254,6 @@ const Booking: React.FC = () => {
   const [destinationQuery, setDestinationQuery] = useState("");
   const [ride, setRide] = useState<IRide | null>(null);
 
-  const navigate = useNavigate();
   const [requestRide, { isLoading }] = useRequestRideMutation();
   console.log({
     pickup: { lat: pickup?.lat, lon: pickup?.lon },

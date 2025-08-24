@@ -11,7 +11,7 @@ import { routes } from "./routes";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ReduxProvider store={store}>
-      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
         <RouterProvider router={routes} />
         <Toaster richColors/>
       </ThemeProvider>

@@ -1,9 +1,10 @@
 import Analytics from "@/pages/rider/Analytics";
 import Booking from "@/pages/rider/Booking";
+import Emergency from "@/pages/rider/Emergency";
 import Profile from "@/pages/rider/Profile";
 import RequestToBeDriver from "@/pages/rider/RequestToBeDriver";
 import RideHistory from "@/pages/rider/RideHistory";
-import UpdateProfile from "@/pages/rider/UpdateProfile";
+import { UpdateProfile } from "@/pages/rider/UpdateProfile";
 import VerifyProfile from "@/pages/rider/VerifyProfile";
 import type { ISidebarRoute } from "@/types/route-type";
 
@@ -39,9 +40,14 @@ export const riderSidebarRoutes: ISidebarRoute[] = [
     url: "#",
     items: [
       {
-        title: "Book a Ride",
+        title: "Request a Ride",
         url: "/rider/booking",
         Component: Booking,
+      },
+      {
+        title: "SOS",
+        url: "/rider/booking/emergency",
+        Component: Emergency,
       },
       {
         title: "Ride History",
