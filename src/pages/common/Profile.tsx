@@ -77,7 +77,10 @@ const Profile = () => {
           <CardDescription>Detailed information about the user</CardDescription>
         </div>
         <Button asChild variant="outline" size="sm">
-          <Link to={`/${user?.role && user?.role.toLowerCase()}/update`} className="flex items-center">
+          <Link
+            to={`/${user?.role && user?.role.toLowerCase()}/update`}
+            className="flex items-center"
+          >
             <Edit className="mr-2 h-4 w-4" />
             Edit Profile
           </Link>
@@ -105,10 +108,7 @@ const Profile = () => {
             </div>
 
             <div className="flex items-center gap-2">
-              <Badge
-                variant={getRoleVariant(user?.role as TUserRole)}
-                className="flex items-center gap-1"
-              >
+              <Badge className="flex items-center gap-1">
                 <Shield className="h-3 w-3" />
                 {user?.role}
               </Badge>
