@@ -64,6 +64,7 @@ const AllRides = () => {
       {allRides?.some(
         (ride) => ride.status === "IN_TRANSIT" || ride.status === "PICKED_UP",
       ) && <Emergency />}
+      <title>All Rides | Cabsy</title>
       <div className="rounded-lg border shadow-sm">
         <Table>
           <TableCaption>A list of all rides in the system</TableCaption>

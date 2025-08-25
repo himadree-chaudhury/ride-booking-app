@@ -99,7 +99,7 @@ axiosInstance.interceptors.response.use(
     // Check if the error is due to forbidden access
     if (error.response?.status === httpStatus.FORBIDDEN) {
       await axiosInstance.post("/auth/logout");
-      window.location.href = "/unauthorized";
+      window.location.href = "/sign-in";
       return Promise.reject(error);
     }
 
