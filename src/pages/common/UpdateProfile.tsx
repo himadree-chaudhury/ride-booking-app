@@ -69,7 +69,9 @@ export function UpdateProfile({
     try {
       await updateUser(userInfo).unwrap();
       toast.success("User updated successfully", { id: toastId });
-      navigate("/rider/profile");
+      if (user?.role) {
+        navigate(`/${user.role.toLowerCase()}/profile`);
+      }
     } catch (error: unknown) {
       const err = (error as unknown as { data: IResponseError }).data;
       toast.error(`${err.status}: ${err.message}`, { id: toastId });

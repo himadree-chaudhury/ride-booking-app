@@ -45,7 +45,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild className="sidebar-logo">
               <Link to="/home">
-                <div className="flex aspect-square size-10 items-center justify-center rounded-full bg-foreground">
+                <div className="bg-foreground flex aspect-square size-10 items-center justify-center rounded-full">
                   <img src={logo} alt="Logo" className="size-7" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
@@ -93,7 +93,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenu>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarMenu>
+          <SidebarMenu className="make-tour">
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
                 <Button variant="outline" onClick={handleRestartTour}>

@@ -1,3 +1,4 @@
+import StatSkeleton from "@/components/modules/Dashboard/StatSkeleton";
 import {
   Card,
   CardContent,
@@ -5,7 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useRiderPersonalStatsQuery } from "@/redux/features/stat.api";
 import type { IRiderRideSummary } from "@/types/rider-type";
 import {
@@ -90,62 +90,12 @@ const Analytics = () => {
   const COLORS = ["#10b981", "#ef4444", "#3b82f6"];
 
   if (isLoading) {
-    return (
-      <div className="container mx-auto space-y-6 py-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <Skeleton className="mb-2 h-10 w-64" />
-            <Skeleton className="h-5 w-80" />
-          </div>
-          <Skeleton className="h-10 w-32" />
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {[1, 2, 3, 4].map((item) => (
-            <Card key={item}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-5 w-5" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="mb-1 h-7 w-16" />
-                <Skeleton className="h-4 w-32" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <Skeleton className="h-6 w-40" />
-              <Skeleton className="h-4 w-60" />
-            </CardHeader>
-            <CardContent>
-              <Skeleton className="h-80 w-full" />
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <Skeleton className="h-6 w-40" />
-              <Skeleton className="h-4 w-60" />
-            </CardHeader>
-            <CardContent>
-              <Skeleton className="h-80 w-full" />
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
+    return <StatSkeleton />;
   }
 
   return (
     <div className="container mx-auto space-y-6">
-      <p className="text-muted-foreground">
-        Comprehensive overview of your riding activity
-      </p>
-
+      <title>Analytics | Cabsy</title>
       {/* Stats Grid */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
