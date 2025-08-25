@@ -4,6 +4,7 @@ import Heading from "@/components/modules/common/Heading";
 const Faq = () => {
   return (
     <div>
+      <title>FAQ | Cabsy</title>
       <Heading
         title={"DOUBTS"}
         heading={"Frequently Asked Questions"}

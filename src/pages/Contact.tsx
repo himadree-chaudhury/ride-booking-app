@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 const Contact = () => {
   return (
     <div>
+      <title>Contact | Cabsy</title>
       <Heading
         title={"CONTACT"}
         heading={"Contact With Us"}

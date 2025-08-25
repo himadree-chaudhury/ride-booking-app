@@ -63,6 +63,8 @@ const Profile = () => {
 
   return (
     <Card className="mx-auto w-full max-w-2xl">
+      <title>Profile | Cabsy</title>
+
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <div>
           <CardTitle className="text-2xl font-bold">User Profile</CardTitle>

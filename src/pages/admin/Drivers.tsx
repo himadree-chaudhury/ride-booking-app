@@ -6,15 +6,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useUserStatsQuery } from "@/redux/features/stat.api";
-import type { IUserStats } from "@/types/admin.type";
+import { useDriverStatsQuery } from "@/redux/features/stat.api";
+import type { IDriverStats } from "@/types/admin.type";
 import {
   Activity,
   CheckCircle,
-  Shield,
-  Trash2,
+  Star,
   User,
-  Users2,
+  Users,
+  XCircle,
 } from "lucide-react";
 import {
   Bar,
@@ -30,28 +30,44 @@ import {
   YAxis,
 } from "recharts";
 
-const Users = () => {
-  const { data: stats, isLoading } = useUserStatsQuery(undefined);
-  const userStats: IUserStats = stats?.data;
+const Drivers = () => {
 
-  const userStatusData = [
+  const { data: stats, isLoading } = useDriverStatsQuery(undefined);
+  const driverStats: IDriverStats = stats?.data;
+
+  const driverStatusData = [
     {
-      name: "Verified",
-      value: userStats?.verifiedUsers ?? 0,
+      name: "Approved",
+      value: driverStats?.approvedDrivers ?? 0,
       color: "#22c55e",
     },
-    { name: "Blocked", value: userStats?.blockedUsers ?? 0, color: "#ef4444" },
-    { name: "Deleted", value: userStats?.deletedUsers ?? 0, color: "#6b7280" },
+    {
+      name: "Suspended",
+      value: driverStats?.suspendedDrivers ?? 0,
+      color: "#ef4444",
+    },
+    {
+      name: "Available",
+      value: driverStats?.availableDrivers ?? 0,
+      color: "#3b82f6",
+    },
+    { name: "Rated", value: driverStats?.ratedDrivers ?? 0, color: "#f59e0b" },
   ];
 
-  const weeklyUserData = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
-    (day) => ({
-      day,
-      newUsers: Math.floor(Math.random() * 20), // Placeholder: Replace with actual data
-    }),
-  );
+  const weeklyDriverData = [
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat",
+    "Sun",
+  ].map((day) => ({
+    day,
+    newDrivers: Math.floor(Math.random() * 15), // Placeholder: Replace with actual data
+  }));
 
-  const COLORS = ["#22c55e", "#ef4444", "#6b7280", "#3b82f6", "#f59e0b"];
+  const COLORS = ["#22c55e", "#ef4444", "#3b82f6", "#f59e0b"];
 
   if (isLoading) {
     return <StatSkeleton />;
@@ -59,23 +75,23 @@ const Users = () => {
 
   return (
     <div className="container mx-auto space-y-6">
-      <title>Users Analytics | Cabsy</title>
+      <title>Drivers Analytics | Cabsy</title>
       {/* Stats Grid */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-            <Users2 className="text-muted-foreground h-4 w-4" />
+            <CardTitle className="text-sm font-medium">Total Drivers</CardTitle>
+            <Users className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {userStats?.totalUsers ?? 0}
+              {driverStats?.totalDrivers ?? 0}
             </div>
             <p className="text-muted-foreground text-xs">
-              +{userStats?.newUsersInLast7Days ?? 0} last 7 days
+              +{driverStats?.newDriversInLast7Days ?? 0} last 7 days
             </p>
             <p className="text-muted-foreground text-xs">
-              +{userStats?.newUsersInLast30Days ?? 0} last 30 days
+              +{driverStats?.newDriversInLast30Days ?? 0} last 30 days
             </p>
           </CardContent>
         </Card>
@@ -83,39 +99,22 @@ const Users = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Verified Users
+              Approved Drivers
             </CardTitle>
             <CheckCircle className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {userStats?.verifiedUsers ?? 0}
+              {driverStats?.approvedDrivers ?? 0}
             </div>
             <p className="text-muted-foreground text-xs">
-              {userStats?.totalUsers
+              {driverStats?.totalDrivers
                 ? Math.round(
-                    (userStats.verifiedUsers / userStats.totalUsers) * 100,
+                    (driverStats.approvedDrivers / driverStats.totalDrivers) *
+                      100,
                   )
                 : 0}
-              % verification rate
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">User Types</CardTitle>
-            <User className="text-muted-foreground h-4 w-4" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {(userStats?.totalRiders ?? 0) + (userStats?.totalDrivers ?? 0)}
-            </div>
-            <p className="text-muted-foreground text-xs">
-              {userStats?.totalRiders ?? 0} riders
-            </p>
-            <p className="text-muted-foreground text-xs">
-              {userStats?.totalDrivers ?? 0} drivers
+              % approval rate
             </p>
           </CardContent>
         </Card>
@@ -123,19 +122,42 @@ const Users = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Blocked/Deleted
+              Available Drivers
             </CardTitle>
-            <Shield className="text-muted-foreground h-4 w-4" />
+            <User className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {(userStats?.blockedUsers ?? 0) + (userStats?.deletedUsers ?? 0)}
+              {driverStats?.availableDrivers ?? 0}
             </div>
             <p className="text-muted-foreground text-xs">
-              {userStats?.blockedUsers ?? 0} blocked
+              {driverStats?.totalDrivers
+                ? Math.round(
+                    (driverStats.availableDrivers / driverStats.totalDrivers) *
+                      100,
+                  )
+                : 0}
+              % of total drivers
             </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Rated Drivers</CardTitle>
+            <Star className="text-muted-foreground h-4 w-4" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {driverStats?.ratedDrivers ?? 0}
+            </div>
             <p className="text-muted-foreground text-xs">
-              {userStats?.deletedUsers ?? 0} deleted
+              {driverStats?.totalDrivers
+                ? Math.round(
+                    (driverStats.ratedDrivers / driverStats.totalDrivers) * 100,
+                  )
+                : 0}
+              % rated
             </p>
           </CardContent>
         </Card>
@@ -147,21 +169,21 @@ const Users = () => {
           <CardHeader>
             <CardTitle className="flex items-center">
               <Activity className="mr-2 h-5 w-5" />
-              Weekly New Users
+              Weekly New Drivers
             </CardTitle>
-            <CardDescription>New user registrations by day</CardDescription>
+            <CardDescription>New driver registrations by day</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={320}>
-              <BarChart data={weeklyUserData}>
+              <BarChart data={weeklyDriverData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="day" />
                 <YAxis />
                 <Tooltip
-                  formatter={(value) => [`${value} users`, "New Users"]}
+                  formatter={(value) => [`${value} drivers`, "New Drivers"]}
                 />
                 <Legend />
-                <Bar dataKey="newUsers" fill="#3b82f6" name="New Users" />
+                <Bar dataKey="newDrivers" fill="#3b82f6" name="New Drivers" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -171,17 +193,17 @@ const Users = () => {
           <CardHeader>
             <CardTitle className="flex items-center">
               <CheckCircle className="mr-2 h-5 w-5" />
-              User Status Distribution
+              Driver Status Distribution
             </CardTitle>
             <CardDescription>
-              Breakdown of user account statuses
+              Breakdown of driver account statuses
             </CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={320}>
               <PieChart>
                 <Pie
-                  data={userStatusData}
+                  data={driverStatusData}
                   dataKey="value"
                   nameKey="name"
                   cx="50%"
@@ -191,14 +213,14 @@ const Users = () => {
                     `${((percent ?? 0) * 100).toFixed(0)}%`
                   }
                 >
-                  {userStatusData.map((_, index) => (
+                  {driverStatusData.map((_, index) => (
                     <Cell
                       key={`cell-${index}`}
                       fill={COLORS[index % COLORS.length]}
                     />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value) => [`${value} users`, "Count"]} />
+                <Tooltip formatter={(value) => [`${value} drivers`, "Count"]} />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
@@ -210,22 +232,26 @@ const Users = () => {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Riders</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Approved Drivers
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
-              <Users2 className="mr-3 h-8 w-8 text-blue-500" />
+              <CheckCircle className="mr-3 h-8 w-8 text-green-500" />
               <div>
                 <div className="text-2xl font-bold">
-                  {userStats?.totalRiders ?? 0}
+                  {driverStats?.approvedDrivers ?? 0}
                 </div>
                 <p className="text-muted-foreground text-xs">
-                  {userStats?.totalUsers
+                  {driverStats?.totalDrivers
                     ? Math.round(
-                        (userStats.totalRiders / userStats.totalUsers) * 100,
+                        (driverStats.approvedDrivers /
+                          driverStats.totalDrivers) *
+                          100,
                       )
                     : 0}
-                  % of total users
+                  % of total drivers
                 </p>
               </div>
             </div>
@@ -234,22 +260,26 @@ const Users = () => {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Drivers</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Suspended Drivers
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
-              <Users2 className="mr-3 h-8 w-8 text-yellow-500" />
+              <XCircle className="mr-3 h-8 w-8 text-red-500" />
               <div>
                 <div className="text-2xl font-bold">
-                  {userStats?.totalDrivers ?? 0}
+                  {driverStats?.suspendedDrivers ?? 0}
                 </div>
                 <p className="text-muted-foreground text-xs">
-                  {userStats?.totalUsers
+                  {driverStats?.totalDrivers
                     ? Math.round(
-                        (userStats.totalDrivers / userStats.totalUsers) * 100,
+                        (driverStats.suspendedDrivers /
+                          driverStats.totalDrivers) *
+                          100,
                       )
                     : 0}
-                  % of total users
+                  % of total drivers
                 </p>
               </div>
             </div>
@@ -258,18 +288,16 @@ const Users = () => {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Deleted Users</CardTitle>
+            <CardTitle className="text-sm font-medium">Rated Drivers</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
-              <Trash2 className="mr-3 h-8 w-8 text-gray-500" />
+              <Star className="mr-3 h-8 w-8 text-yellow-500" />
               <div>
                 <div className="text-2xl font-bold">
-                  {userStats?.deletedUsers ?? 0}
+                  {driverStats?.ratedDrivers ?? 0}
                 </div>
-                <p className="text-muted-foreground text-xs">
-                  Deleted accounts
-                </p>
+                <p className="text-muted-foreground text-xs">Rated drivers</p>
               </div>
             </div>
           </CardContent>
@@ -279,4 +307,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Drivers;

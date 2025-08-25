@@ -331,6 +331,7 @@ const Booking: React.FC = () => {
 
   return (
     <div>
+      <title>Book a Ride | Cabsy</title>
       <div className="mb-6 flex flex-col justify-center gap-6 p-4">
         <div className="space-y-2">
           <Label>Pickup Location</Label>

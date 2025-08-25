@@ -81,6 +81,7 @@ export function UpdateProfile({
       className={cn("mx-auto flex max-w-sm flex-col gap-6", className)}
       {...props}
     >
+      <title>Update Profile | Cabsy</title>
       {!user?.isVerified ? (
         <p className="text-destructive text-center text-sm">
           Your profile is not verified. Please verify your profile to continue.
