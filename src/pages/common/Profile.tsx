@@ -10,15 +10,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useGetUserQuery } from "@/redux/features/user.api";
-import type { IUser, TUserRole } from "@/types/user-type";
+import type { IUser } from "@/types/user-type";
 import {
   Ban,
   Calendar,
   CheckCircle,
+  CircleAlert,
   Edit,
   Mail,
   Phone,
-  Shield,
+  User,
 } from "lucide-react";
 import { Link } from "react-router";
 
@@ -26,35 +27,26 @@ const Profile = () => {
   const { data, isLoading } = useGetUserQuery(undefined);
   const user: IUser = data?.data;
 
-  const getRoleVariant = (role: TUserRole) => {
-    switch (role) {
-      case "ADMIN":
-        return "destructive";
-      case "DRIVER":
-        return "default";
-      case "RIDER":
-        return "secondary";
-      default:
-        return "outline";
-    }
-  };
-
   const getStatusBadge = (user: IUser) => {
     if (user?.isBlocked) {
       return (
         <Badge variant="destructive" className="flex items-center gap-1">
-          <Ban className="h-3 w-3" /> Blocked
+          <Ban className="h-3 w-3 text-red-500" /> Blocked
         </Badge>
       );
     }
     if (user?.isVerified) {
       return (
         <Badge variant="outline" className="flex items-center gap-1">
-          <CheckCircle className="h-3 w-3" /> Verified
+          <CheckCircle className="h-3 w-3 text-green-500" /> Verified
         </Badge>
       );
     }
-    return <Badge variant="outline">Pending</Badge>;
+    return (
+      <Badge variant="secondary" className="flex items-center gap-1">
+        <CircleAlert className="h-3 w-3 text-yellow-500" /> Pending
+      </Badge>
+    );
   };
 
   const formatDate = (dateString: string) => {
@@ -109,7 +101,7 @@ const Profile = () => {
 
             <div className="flex items-center gap-2">
               <Badge className="flex items-center gap-1">
-                <Shield className="h-3 w-3" />
+                <User className="h-3 w-3" />
                 {user?.role}
               </Badge>
 

@@ -45,7 +45,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild className="sidebar-logo">
               <Link to="/home">
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-10 items-center justify-center rounded-lg">
+                <div className="flex aspect-square size-10 items-center justify-center rounded-full bg-foreground">
                   <img src={logo} alt="Logo" className="size-7" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">

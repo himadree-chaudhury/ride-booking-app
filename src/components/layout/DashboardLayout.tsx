@@ -93,8 +93,8 @@ const steps = [
 function TourController() {
   const { setIsOpen } = useTour();
 
+  // Check if the tour has been shown before
   useEffect(() => {
-    // Check if the tour has been shown before
     const hasSeenTour = localStorage.getItem("hasSeenDashboardTour");
     if (!hasSeenTour) {
       // Delay to ensure the DOM is ready
