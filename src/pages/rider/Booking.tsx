@@ -129,7 +129,7 @@ interface MapHandlerProps {
   setDestinationQuery: (query: string) => void;
 }
 
-const MapHandler: React.FC<MapHandlerProps> = ({
+export const MapHandler: React.FC<MapHandlerProps> = ({
   pickup,
   destination,
   setPickup,
@@ -185,7 +185,7 @@ interface RouteHandlerProps {
   destination: NominatimResult | null;
 }
 
-const RouteHandler: React.FC<RouteHandlerProps> = ({ pickup, destination }) => {
+export const RouteHandler: React.FC<RouteHandlerProps> = ({ pickup, destination }) => {
   const [path, setPath] = useState<L.LatLng[]>([]);
 
   useEffect(() => {
@@ -403,7 +403,7 @@ const Booking: React.FC = () => {
         {isLoading ? (
           <LoadingSpinner />
         ) : (
-          ride && <Confirmation bookingDetails={ride} />
+          ride && <Confirmation bookingDetails={ride} setRide={setRide} />
         )}
       </div>
     </div>

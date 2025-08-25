@@ -1,4 +1,5 @@
 import Heading from "@/components/modules/common/Heading";
+import { Button } from "@/components/ui/button";
 
 const Contact = () => {
   return (
@@ -11,12 +12,12 @@ const Contact = () => {
 
       <div className="grid gap-12 md:grid-cols-2">
         {/* Contact Form */}
-        <form className="rounded-2xl  p-8 shadow-md">
+        <form className="rounded-2xl p-8 shadow-md">
           <div className="mb-4">
             <label className="mb-2 block text-sm font-medium">Name</label>
             <input
               type="text"
-              placeholder="Your name"
+              placeholder="John Doe"
               className="w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
             />
           </div>
@@ -25,7 +26,7 @@ const Contact = () => {
             <label className="mb-2 block text-sm font-medium">Email</label>
             <input
               type="email"
-              placeholder="you@example.com"
+              placeholder="jon@example.com"
               className="w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
             />
           </div>
@@ -39,16 +40,11 @@ const Contact = () => {
             ></textarea>
           </div>
 
-          <button
-            type="submit"
-            className="w-full rounded-lg bg-indigo-600 px-4 py-2 font-semibold text-white transition hover:bg-indigo-700"
-          >
-            Send Message
-          </button>
+          <Button className="w-full">Send Message</Button>
         </form>
 
         {/* Contact Info */}
-        <div className="flex flex-col justify-center space-y-6 *:border *:p-3 *:rounded-2xl *:shadow-md">
+        <div className="flex flex-col justify-center space-y-6 *:rounded-2xl *:border *:p-3 *:shadow-md">
           <div>
             <h3 className="text-lg font-semibold">Email</h3>
             <p className="">support@cabsy.com</p>

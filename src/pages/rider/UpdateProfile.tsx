@@ -42,7 +42,7 @@ export function UpdateProfile({
   const { data } = useGetUserQuery(undefined);
   const user = data?.data;
   const navigate = useNavigate();
-  
+
   // *Form type check-up via Zod & setting default values
   const form = useForm<z.infer<typeof updateSchema>>({
     resolver: zodResolver(updateSchema),
@@ -156,7 +156,7 @@ export function UpdateProfile({
         {!user.isVerified ? "Want to get verified?" : "Already updated?"}{" "}
         {!user.isVerified ? (
           <Link
-            to="/rider/profile/verify"
+            to="/rider/verify"
             className="underline underline-offset-4"
           >
             Get Verified

@@ -405,7 +405,7 @@ export function RequestToBeDriver({
       <div className="text-center text-sm">
         Don't verify your account?{" "}
         <Link
-          to="/rider/profile/verify"
+          to="/rider/verify"
           className="underline underline-offset-4"
         >
           Get Verified

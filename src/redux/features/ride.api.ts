@@ -9,7 +9,23 @@ export const rideApi = baseApi.injectEndpoints({
         data: rideData,
       }),
     }),
+    getAllRides: builder.query({
+      query: () => ({
+        url: "/ride/all",
+        method: "GET",
+      }),
+    }),
+    getRideDetails: builder.query({
+      query: (id) => ({
+        url: `/ride/${id}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useRequestRideMutation } = rideApi;
+export const {
+  useRequestRideMutation,
+  useGetAllRidesQuery,
+  useGetRideDetailsQuery,
+} = rideApi;

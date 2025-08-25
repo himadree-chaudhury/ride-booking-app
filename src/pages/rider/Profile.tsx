@@ -77,7 +77,7 @@ const Profile = () => {
           <CardDescription>Detailed information about the user</CardDescription>
         </div>
         <Button variant="outline" size="sm">
-          <Link to={`/rider/profile/update`} className="flex items-center">
+          <Link to={`/rider/update`} className="flex items-center">
             <Edit className="mr-2 h-4 w-4" />
             Edit Profile
           </Link>

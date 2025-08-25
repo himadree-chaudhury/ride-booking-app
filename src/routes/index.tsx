@@ -18,6 +18,7 @@ import { adminSidebarRoutes } from "./adminSidebarRoutes";
 import { driverSidebarRoutes } from "./driverSidebarRoutes";
 import { riderSidebarRoutes } from "./riderSidebarRoutes";
 import Unauthorized from "@/pages/Unauthorized";
+import RideHistory from "@/pages/common/RideHistory";
 
 const DashboardLayout = lazy(
   () => import("@/components/layout/DashboardLayout"),
@@ -67,6 +68,10 @@ export const routes = createBrowserRouter([
         path: "booking",
         Component: authVerification(Booking, UserRole.RIDER as TUserRole),
       },
+      // {
+      //   path: "ride-details/:id",
+      //   Component: authVerification(RideHistory, UserRole.RIDER as TUserRole),
+      // },
       {
         path: "unauthorized",
         Component: Unauthorized,
@@ -87,17 +92,27 @@ export const routes = createBrowserRouter([
   {
     path: "/driver",
     Component: authVerification(DashboardLayout, UserRole.DRIVER as TUserRole),
-    children: [{
+    children: [
+      {
         index: true,
         element: <Navigate to="/driver/profile" />,
-    },...generateRoutes(driverSidebarRoutes)],
+      },
+      ...generateRoutes(driverSidebarRoutes),
+    ],
   },
   {
     path: "/rider",
     Component: authVerification(DashboardLayout, UserRole.RIDER as TUserRole),
-    children: [{
-      index: true,
-      element: <Navigate to="/rider/profile" />,
-    }, ...generateRoutes(riderSidebarRoutes)],
+    children: [
+      {
+        index: true,
+        element: <Navigate to="/rider/profile" />,
+      },
+      {
+        path: "/rider/ride-details/:rideId",
+        Component: RideHistory,
+      },
+      ...generateRoutes(riderSidebarRoutes),
+    ],
   },
 ]);

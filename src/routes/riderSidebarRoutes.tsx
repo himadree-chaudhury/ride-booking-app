@@ -1,9 +1,9 @@
+import AllRides from "@/pages/common/AllRides";
 import Analytics from "@/pages/rider/Analytics";
 import Booking from "@/pages/rider/Booking";
 import Emergency from "@/pages/rider/Emergency";
 import Profile from "@/pages/rider/Profile";
 import { RequestToBeDriver } from "@/pages/rider/RequestToBeDriver";
-import RideHistory from "@/pages/rider/RideHistory";
 import { UpdateProfile } from "@/pages/rider/UpdateProfile";
 import VerifyProfile from "@/pages/rider/VerifyProfile";
 import type { ISidebarRoute } from "@/types/route-type";
@@ -20,17 +20,17 @@ export const riderSidebarRoutes: ISidebarRoute[] = [
       },
       {
         title: "Verify Profile",
-        url: "/rider/profile/verify",
+        url: "/rider/verify",
         Component: VerifyProfile,
       },
       {
         title: "Update Profile",
-        url: "/rider/profile/update",
+        url: "/rider/update",
         Component: UpdateProfile,
       },
       {
         title: "Request For Being Driver",
-        url: "/rider/profile/request-driver",
+        url: "/rider/request-driver",
         Component: RequestToBeDriver,
       },
     ],
@@ -46,13 +46,13 @@ export const riderSidebarRoutes: ISidebarRoute[] = [
       },
       {
         title: "SOS",
-        url: "/rider/booking/emergency",
+        url: "/rider/emergency",
         Component: Emergency,
       },
       {
-        title: "Ride History",
-        url: "/rider/booking/history",
-        Component: RideHistory,
+        title: "See All Rides",
+        url: "/rider/all-rides",
+        Component: AllRides,
       },
     ],
   },

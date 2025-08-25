@@ -1,5 +1,5 @@
 export interface IRide {
-  createdAt: string;
+  _id?: string;
   destinationLocation: {
     latitude: number;
     longitude: number;
@@ -10,12 +10,18 @@ export interface IRide {
     latitude: number;
     longitude: number;
   };
-  requestedAt: string;
   riderId: {
     name: string;
     phone: string;
   };
   status: string;
+  requestedAt: string;
+  cancelledAt?: string;
+  canceller?: "RIDER" | "DRIVER";
+  pickedUpAt?: string;
+  transitAt?: string;
+  completedAt?: string;
+  createdAt: string;
   updatedAt: string;
 }
 
@@ -37,6 +43,8 @@ export interface IDriverInfo {
     maxPassengers: number;
   };
 }
+
+
 
 
 export type RideStatus =

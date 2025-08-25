@@ -1,12 +1,21 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { axiosInstance } from "@/config/axios";
+import type { IResponseError } from "@/types/error-type";
 import type { IRide, RideStatus } from "@/types/ride-type";
 import { format } from "date-fns";
 import { Calendar, CheckCircle, CreditCard, MapPin, User } from "lucide-react";
+import { toast } from "sonner";
 import DriverInfo from "./DriverInfo";
 
-const Confirmation = ({ bookingDetails }: { bookingDetails: IRide }) => {
+const Confirmation = ({
+  bookingDetails,
+  setRide,
+}: {
+  bookingDetails: IRide;
+  setRide: React.Dispatch<React.SetStateAction<IRide | null>>;
+}) => {
   const formatDate = (dateString: string) => {
     try {
       return format(new Date(dateString), "PPpp");
@@ -16,19 +25,37 @@ const Confirmation = ({ bookingDetails }: { bookingDetails: IRide }) => {
   };
 
   const getStatusVariant = (status: RideStatus) => {
-    switch (status) {
-      case "COMPLETED":
-        return "default";
-      case "CANCELLED":
-        return "destructive";
-      case "IN_TRANSIT":
-        return "secondary";
-      case "PICKED_UP":
-        return "secondary";
-      case "REQUESTED":
-        return "outline";
-      default:
-        return "outline";
+   switch (status) {
+     case "COMPLETED":
+       return "success";
+     case "CANCELLED":
+       return "destructive";
+     case "IN_TRANSIT":
+       return "process";
+     case "PICKED_UP":
+       return "secondary";
+     case "ACCEPTED":
+       return "build";
+     case "REQUESTED":
+       return "outline";
+     default:
+       return "outline";
+   }
+  };
+
+  const handleCancelRide = async () => {
+    const toastId = toast.loading("Cancelling ride...");
+    // Implement ride cancellation logic here
+    console.log("Ride cancellation requested for ride ID:", bookingDetails._id);
+    try {
+      await axiosInstance.patch(`/ride/cancel/${bookingDetails._id}`);
+      toast.success("Ride cancelled successfully");
+      setRide(null);
+    } catch (error: unknown) {
+      const err = (error as unknown as { data: IResponseError }).data;
+      toast.error(`${err.status}: ${err.message}`, { id: toastId });
+    } finally {
+      toast.dismiss(toastId);
     }
   };
 
@@ -149,7 +176,11 @@ const Confirmation = ({ bookingDetails }: { bookingDetails: IRide }) => {
 
           {/* Actions */}
           <div className="flex flex-col gap-3 pt-4 sm:flex-row">
-            <Button className="flex-1" variant="destructive">
+            <Button
+              className="flex-1"
+              variant="destructive"
+              onClick={handleCancelRide}
+            >
               Cancel Ride
             </Button>
           </div>
