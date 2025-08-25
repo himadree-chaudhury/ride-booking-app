@@ -18,7 +18,6 @@ import { Outlet, useLocation } from "react-router";
 
 export default function DashboardLayout() {
   const location = useLocation();
-  console.log(location);
 
   return (
     <SidebarProvider>

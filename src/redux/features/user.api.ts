@@ -10,23 +10,46 @@ export const userApi = baseApi.injectEndpoints({
       }),
     }),
     updateUser: builder.mutation({
-      query: (data) => ({
+      query: (userData) => ({
         url: "/user/update",
         method: "PATCH",
-        data: data,
+        data: userData,
       }),
+      invalidatesTags: ["User"],
     }),
-    verifyRequest: builder.query({
+    addEmergencyContact: builder.mutation({
+      query: (contactData) => ({
+        url: "/user/add-sos-contact",
+        method: "PATCH",
+        data: contactData,
+      }),
+      invalidatesTags: ["User"],
+    }),
+    updateEmergencyContact: builder.mutation({
+      query: (id) => ({
+        url: `/user/update-sos-contact/${id}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["User"],
+    }),
+    removeEmergencyContact: builder.mutation({
+      query: (id) => ({
+        url: `/user/delete-sos-contact/${id}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["User"],
+    }),
+    verifyRequest: builder.mutation({
       query: () => ({
-        url: "/user/verify",
-        method: "GET",
+        url: "/user/verify-request",
+        method: "POST",
       }),
     }),
     verifyUser: builder.mutation({
-      query: (data) => ({
+      query: (otp) => ({
         url: "/user/verify",
         method: "POST",
-        data: data,
+        data: otp,
       }),
     }),
     getUser: builder.query({
@@ -42,7 +65,10 @@ export const userApi = baseApi.injectEndpoints({
 export const {
   useRegisterMutation,
   useUpdateUserMutation,
-  useVerifyRequestQuery,
+  useAddEmergencyContactMutation,
+  useUpdateEmergencyContactMutation,
+  useRemoveEmergencyContactMutation,
+  useVerifyRequestMutation,
   useVerifyUserMutation,
   useGetUserQuery,
 } = userApi;

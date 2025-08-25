@@ -23,10 +23,6 @@ const Steps = () => {
     <div>
       <Stepper
         initialStep={1}
-        onStepChange={(step) => {
-          console.log(step);
-        }}
-        onFinalStepCompleted={() => console.log("All steps completed!")}
         backButtonText="Previous"
         nextButtonText="Next"
       >

@@ -73,7 +73,7 @@ export function RegisterForm({
     };
 
     try {
-      await register(userInfo);
+      await register(userInfo).unwrap();
       toast.success("User created successfully", { id: toastId });
       navigate("/sign-in");
     } catch (error: unknown) {
