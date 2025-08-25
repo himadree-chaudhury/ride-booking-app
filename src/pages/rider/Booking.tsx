@@ -103,12 +103,12 @@ const PlaceAutocomplete: React.FC<AutocompleteProps> = ({
         className="w-full rounded border border-gray-300 p-2"
       />
       {suggestions.length > 0 && (
-        <ul className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded border border-gray-300 bg-white">
+        <ul className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded border border-gray-300 bg-muted">
           {suggestions.map((suggestion) => (
             <li
               key={suggestion.place_id}
               onClick={() => handleSelect(suggestion)}
-              className="cursor-pointer p-2 hover:bg-gray-100"
+              className="cursor-pointer p-2 hover:bg-background"
             >
               {suggestion.display_name}
             </li>
@@ -255,10 +255,6 @@ const Booking: React.FC = () => {
   const [ride, setRide] = useState<IRide | null>(null);
 
   const [requestRide, { isLoading }] = useRequestRideMutation();
-  console.log({
-    pickup: { lat: pickup?.lat, lon: pickup?.lon },
-    destination: { lat: destination?.lat, lon: destination?.lon },
-  });
 
   // *Ride request handler
   const handleRequestRide = async () => {
@@ -282,7 +278,6 @@ const Booking: React.FC = () => {
       };
 
       const res = await requestRide(rideLocations).unwrap();
-      console.log(res, rideLocations);
       toast.success("Ride requested successfully", {
         id: toastId,
       });

@@ -57,7 +57,6 @@ export function UpdateProfile({
     },
   });
 
-
   // *Form submission handler
   const onSubmit = async (data: z.infer<typeof updateSchema>) => {
     const toastId = toast.loading("Updating user...");
@@ -68,7 +67,7 @@ export function UpdateProfile({
     };
 
     try {
-      await updateUser(userInfo);
+      await updateUser(userInfo).unwrap();
       toast.success("User updated successfully", { id: toastId });
       navigate("/rider/profile");
     } catch (error: unknown) {
@@ -166,7 +165,10 @@ export function UpdateProfile({
             Get Verified
           </Link>
         ) : (
-          <Link to={`/${user?.role && user?.role.toLowerCase()}/profile`} className="underline underline-offset-4">
+          <Link
+            to={`/${user?.role && user?.role.toLowerCase()}/profile`}
+            className="underline underline-offset-4"
+          >
             Visit Profile
           </Link>
         )}

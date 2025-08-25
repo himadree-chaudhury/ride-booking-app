@@ -4,7 +4,6 @@ import type { IDriverInfo } from "@/types/ride-type";
 import { format } from "date-fns";
 import { Car, MapPin, Shield, Star, User } from "lucide-react";
 
-
 const DriverInfo = ({ driverInfo }: { driverInfo: IDriverInfo }) => {
   const formatDate = (dateString: string) => {
     try {

@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { axiosInstance } from "@/config/axios";
+import { useCancelRideMutation } from "@/redux/features/ride.api";
 import type { IResponseError } from "@/types/error-type";
 import type { IRide, RideStatus } from "@/types/ride-type";
 import { format } from "date-fns";
@@ -16,6 +16,7 @@ const Confirmation = ({
   bookingDetails: IRide;
   setRide: React.Dispatch<React.SetStateAction<IRide | null>>;
 }) => {
+  const [cancelRide] = useCancelRideMutation();
   const formatDate = (dateString: string) => {
     try {
       return format(new Date(dateString), "PPpp");
@@ -25,30 +26,28 @@ const Confirmation = ({
   };
 
   const getStatusVariant = (status: RideStatus) => {
-   switch (status) {
-     case "COMPLETED":
-       return "success";
-     case "CANCELLED":
-       return "destructive";
-     case "IN_TRANSIT":
-       return "process";
-     case "PICKED_UP":
-       return "secondary";
-     case "ACCEPTED":
-       return "build";
-     case "REQUESTED":
-       return "outline";
-     default:
-       return "outline";
-   }
+    switch (status) {
+      case "COMPLETED":
+        return "success";
+      case "CANCELLED":
+        return "destructive";
+      case "IN_TRANSIT":
+        return "process";
+      case "PICKED_UP":
+        return "secondary";
+      case "ACCEPTED":
+        return "build";
+      case "REQUESTED":
+        return "outline";
+      default:
+        return "outline";
+    }
   };
 
   const handleCancelRide = async () => {
     const toastId = toast.loading("Cancelling ride...");
-    // Implement ride cancellation logic here
-    console.log("Ride cancellation requested for ride ID:", bookingDetails._id);
     try {
-      await axiosInstance.patch(`/ride/cancel/${bookingDetails._id}`);
+      await cancelRide(bookingDetails._id).unwrap();
       toast.success("Ride cancelled successfully");
       setRide(null);
     } catch (error: unknown) {

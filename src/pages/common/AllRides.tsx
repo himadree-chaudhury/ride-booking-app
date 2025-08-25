@@ -64,11 +64,11 @@ const AllRides = () => {
       {allRides?.some(
         (ride) => ride.status === "IN_TRANSIT" || ride.status === "PICKED_UP",
       ) && <Emergency />}
-      <div className="rounded-lg border bg-white shadow-sm">
+      <div className="rounded-lg border shadow-sm">
         <Table>
           <TableCaption>A list of all rides in the system</TableCaption>
           <TableHeader>
-            <TableRow className="bg-muted/50">
+            <TableRow className="bg-muted/60">
               <TableHead className="flex items-center">
                 <div className="flex items-center">
                   <Calendar className="mr-2 h-4 w-4" />

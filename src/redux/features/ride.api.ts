@@ -9,6 +9,12 @@ export const rideApi = baseApi.injectEndpoints({
         data: rideData,
       }),
     }),
+    cancelRide: builder.mutation({
+      query: (rideId) => ({
+        url: `/ride/cancel/${rideId}`,
+        method: "PATCH",
+      }),
+    }),
     getAllRides: builder.query({
       query: () => ({
         url: "/ride/all",
@@ -26,6 +32,7 @@ export const rideApi = baseApi.injectEndpoints({
 
 export const {
   useRequestRideMutation,
+  useCancelRideMutation,
   useGetAllRidesQuery,
   useGetRideDetailsQuery,
 } = rideApi;

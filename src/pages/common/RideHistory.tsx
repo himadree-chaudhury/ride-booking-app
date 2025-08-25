@@ -23,10 +23,8 @@ import { getLocationName } from "@/utils/location";
 
 const RideHistory = () => {
   const { rideId } = useParams<{ rideId: string }>();
-  console.log(rideId);
   const { data: ride, isLoading } = useGetRideDetailsQuery(rideId);
   const rideDetails: IRide = ride?.data;
-  console.log(rideDetails);
 
   // State for location data
   const [pickupLocationName, setPickupLocationName] = useState<string>("");
