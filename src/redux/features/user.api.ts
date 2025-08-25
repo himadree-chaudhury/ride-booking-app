@@ -17,6 +17,28 @@ export const userApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
+    addEmergencyContact: builder.mutation({
+      query: (contactData) => ({
+        url: "/user/add-sos-contact",
+        method: "PATCH",
+        data: contactData,
+      }),
+      invalidatesTags: ["User"],
+    }),
+    updateEmergencyContact: builder.mutation({
+      query: (id) => ({
+        url: `/user/update-sos-contact/${id}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["User"],
+    }),
+    removeEmergencyContact: builder.mutation({
+      query: (id) => ({
+        url: `/user/delete-sos-contact/${id}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["User"],
+    }),
     verifyRequest: builder.mutation({
       query: () => ({
         url: "/user/verify-request",
@@ -43,6 +65,9 @@ export const userApi = baseApi.injectEndpoints({
 export const {
   useRegisterMutation,
   useUpdateUserMutation,
+  useAddEmergencyContactMutation,
+  useUpdateEmergencyContactMutation,
+  useRemoveEmergencyContactMutation,
   useVerifyRequestMutation,
   useVerifyUserMutation,
   useGetUserQuery,

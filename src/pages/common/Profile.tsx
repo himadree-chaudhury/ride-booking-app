@@ -76,8 +76,8 @@ const Profile = () => {
           <CardTitle className="text-2xl font-bold">User Profile</CardTitle>
           <CardDescription>Detailed information about the user</CardDescription>
         </div>
-        <Button variant="outline" size="sm">
-          <Link to={`/rider/update`} className="flex items-center">
+        <Button asChild variant="outline" size="sm">
+          <Link to={`/${user?.role && user?.role.toLowerCase()}/update`} className="flex items-center">
             <Edit className="mr-2 h-4 w-4" />
             Edit Profile
           </Link>
@@ -94,8 +94,7 @@ const Profile = () => {
                 .split(" ")
                 .map((part) => part[0])
                 .join("")
-                .toUpperCase()
-                .slice(0, 2)}
+                .toUpperCase()}
             </AvatarFallback>
           </Avatar>
 

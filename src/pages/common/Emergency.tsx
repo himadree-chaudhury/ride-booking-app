@@ -14,11 +14,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { useEffect, useState } from "react";
 // import { useToast } from "@/components/ui/use-toast";
+import { useGetUserQuery } from "@/redux/features/user.api";
+import type { IContact } from "@/types/user-type";
 import { getLocationName } from "@/utils/location";
 import {
   AlertTriangle,
@@ -28,46 +27,20 @@ import {
   Settings,
   Shield,
   User,
-  X,
 } from "lucide-react";
+import { Link } from "react-router";
 import { toast } from "sonner";
-
-// Emergency contacts type
-interface EmergencyContact {
-  id: string;
-  name: string;
-  phone: string;
-  isPrimary: boolean;
-}
-
 const Emergency = () => {
+  const { data } = useGetUserQuery(undefined);
   const [isSOSModalOpen, setIsSOSModalOpen] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [currentLocation, setCurrentLocation] = useState<{
     lat: number;
     lng: number;
   } | null>(null);
   const [pickupLocationName, setPickupLocationName] = useState<string>("");
   const [isLocationLoading, setIsLocationLoading] = useState(false);
-  const [emergencyContacts, setEmergencyContacts] = useState<
-    EmergencyContact[]
-  >([
-    {
-      id: "1",
-      name: "Emergency Contact 1",
-      phone: "+1234567890",
-      isPrimary: true,
-    },
-    {
-      id: "2",
-      name: "Emergency Contact 2",
-      phone: "+0987654321",
-      isPrimary: false,
-    },
-  ]);
-  const [newContact, setNewContact] = useState({ name: "", phone: "" });
 
-  // Get current location
+  // *Get current location
   const getCurrentLocation = () => {
     setIsLocationLoading(true);
     if (navigator.geolocation) {
@@ -112,12 +85,12 @@ const Emergency = () => {
     }
   };
 
-  // Get location on component mount
+  // *Get location on component mount
   useEffect(() => {
     getCurrentLocation();
   }, []);
 
-  // Call emergency number
+  // *Call emergency number
   const callEmergencyNumber = (number: string) => {
     window.open(`tel:${number}`, "_self");
     toast.loading("Calling Emergency Services", {
@@ -125,8 +98,8 @@ const Emergency = () => {
     });
   };
 
-  // Send SMS to emergency contact
-  const sendEmergencySMS = (contact: EmergencyContact) => {
+  // *Send SMS to emergency contact
+  const sendEmergencySMS = (contact: IContact) => {
     const message = `EMERGENCY: I need help! I am at ${pickupLocationName}. My current location is: ${currentLocation ? `https://maps.google.com/?q=${currentLocation.lat},${currentLocation.lng}` : "Unknown location"}`;
     window.open(
       `sms:${contact.phone}?body=${encodeURIComponent(message)}`,
@@ -138,59 +111,29 @@ const Emergency = () => {
   };
 
   // Share location via WhatsApp
-  const shareViaWhatsApp = (contact: EmergencyContact) => {
+  const shareViaWhatsApp = (contact: IContact) => {
     const message = `EMERGENCY: I need help! I am at ${pickupLocationName}. My current location is: ${currentLocation ? `https://maps.google.com/?q=${currentLocation.lat},${currentLocation.lng}` : "Unknown location"}`;
     window.open(
-      `https://wa.me/${contact.phone}?text=${encodeURIComponent(message)}`,
+      `https://wa.me/${contact?.phone.replace(/\D/g, "")}?text=${encodeURIComponent(message)}`,
       "_blank",
     );
     toast.success("WhatsApp Message Sent", {
-      description: `Location shared with ${contact.name} via WhatsApp.`,
-    });
-  };
-
-  // Add new emergency contact
-  const addEmergencyContact = () => {
-    if (newContact.name && newContact.phone) {
-      const contact: EmergencyContact = {
-        id: Date.now().toString(),
-        name: newContact.name,
-        phone: newContact.phone,
-        isPrimary: emergencyContacts.length === 0,
-      };
-      setEmergencyContacts([...emergencyContacts, contact]);
-      setNewContact({ name: "", phone: "" });
-      toast.success("Contact Added", {
-        description: `${newContact.name} has been added to your emergency contacts.`,
-      });
-    }
-  };
-
-  // Remove emergency contact
-  const removeEmergencyContact = (id: string) => {
-    setEmergencyContacts(
-      emergencyContacts.filter((contact) => contact.id !== id),
-    );
-    toast.success("Contact Removed", {
-      description: "Emergency contact has been removed.",
-    });
-  };
-
-  // Set primary contact
-  const setPrimaryContact = (id: string) => {
-    setEmergencyContacts(
-      emergencyContacts.map((contact) => ({
-        ...contact,
-        isPrimary: contact.id === id,
-      })),
-    );
-    toast.success("Primary Contact Updated", {
-      description: "Your primary emergency contact has been updated.",
+      description: `Location shared with ${contact?.name} via WhatsApp.`,
     });
   };
 
   return (
     <>
+      {/* SOS Floating Button - Only visible during active ride */}
+      <div className="fixed right-6 bottom-6 z-50">
+        <Button
+          onClick={() => setIsSOSModalOpen(true)}
+          className="h-16 w-16 animate-pulse rounded-full bg-red-600 shadow-lg hover:bg-red-700"
+        >
+          <Shield className="h-8 w-8" />
+        </Button>
+      </div>
+
       {/* SOS Modal */}
       <Dialog open={isSOSModalOpen} onOpenChange={setIsSOSModalOpen}>
         <DialogContent className="sm:max-w-md">
@@ -240,9 +183,9 @@ const Emergency = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                {emergencyContacts.map((contact) => (
+                {data?.data?.sosContacts?.map((contact: IContact) => (
                   <div
-                    key={contact.id}
+                    key={contact._id}
                     className="flex items-center justify-between rounded-lg border p-2"
                   >
                     <div>
@@ -251,7 +194,7 @@ const Emergency = () => {
                         {contact.phone}
                       </p>
                       {contact.isPrimary && (
-                        <Badge variant="outline" className="mt-1">
+                        <Badge variant="build" className="mt-1">
                           Primary
                         </Badge>
                       )}
@@ -289,13 +232,16 @@ const Emergency = () => {
                 {currentLocation ? (
                   <div className="space-y-2">
                     <p className="text-sm">
-                      <span className="font-medium">Location:</span> {pickupLocationName}
+                      <span className="font-medium">Location:</span>{" "}
+                      {pickupLocationName}
                     </p>
                     <p className="text-sm">
-                      <span className="font-medium">Latitude:</span> {currentLocation.lat.toFixed(6)}
+                      <span className="font-medium">Latitude:</span>{" "}
+                      {currentLocation.lat.toFixed(6)}
                     </p>
                     <p className="text-sm">
-                      <span className="font-medium">Longitude:</span> {currentLocation.lng.toFixed(6)}
+                      <span className="font-medium">Longitude:</span>{" "}
+                      {currentLocation.lng.toFixed(6)}
                     </p>
                     <Button
                       variant="outline"
@@ -331,125 +277,15 @@ const Emergency = () => {
             <Button variant="outline" onClick={() => setIsSOSModalOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={() => setIsSettingsOpen(true)} variant="secondary">
-              <Settings className="mr-2 h-4 w-4" />
-              Manage Contacts
+            <Button asChild variant="secondary">
+              <Link
+                to={`/${data?.data?.role && data?.data?.role.toLowerCase()}/sos-contact`}
+                className="flex items-center"
+              >
+                <Settings className="mr-2 h-4 w-4" />
+                Manage Contacts
+              </Link>
             </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Emergency Contacts Settings Modal */}
-      <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
-        <DialogContent className="sm:max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="flex items-center">
-              <Shield className="mr-2 h-6 w-6" />
-              Emergency Contacts Settings
-            </DialogTitle>
-            <DialogDescription>
-              Manage your emergency contacts. These contacts will be notified in
-              case of an emergency.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="grid gap-4 py-4">
-            {/* Add New Contact */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Add New Emergency Contact</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Name</Label>
-                    <Input
-                      id="name"
-                      placeholder="Contact Name"
-                      value={newContact.name}
-                      onChange={(e) =>
-                        setNewContact({ ...newContact, name: e.target.value })
-                      }
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input
-                      id="phone"
-                      placeholder="+1234567890"
-                      value={newContact.phone}
-                      onChange={(e) =>
-                        setNewContact({ ...newContact, phone: e.target.value })
-                      }
-                    />
-                  </div>
-                </div>
-                <Button
-                  onClick={addEmergencyContact}
-                  disabled={!newContact.name || !newContact.phone}
-                >
-                  Add Contact
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Existing Contacts */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Your Emergency Contacts</CardTitle>
-                <CardDescription>
-                  {emergencyContacts.length} contacts saved
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {emergencyContacts.length === 0 ? (
-                  <p className="text-muted-foreground py-4 text-center">
-                    No emergency contacts added yet.
-                  </p>
-                ) : (
-                  emergencyContacts.map((contact) => (
-                    <div
-                      key={contact.id}
-                      className="flex items-center justify-between rounded-lg border p-3"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div className="bg-primary/10 rounded-full p-2">
-                          <User className="text-primary h-4 w-4" />
-                        </div>
-                        <div>
-                          <p className="font-medium">{contact.name}</p>
-                          <p className="text-muted-foreground text-sm">
-                            {contact.phone}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <div className="flex items-center space-x-1">
-                          <Switch
-                            checked={contact.isPrimary}
-                            onCheckedChange={() =>
-                              setPrimaryContact(contact.id)
-                            }
-                          />
-                          <span className="text-sm">Primary</span>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removeEmergencyContact(contact.id)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="flex justify-end">
-            <Button onClick={() => setIsSettingsOpen(false)}>Done</Button>
           </div>
         </DialogContent>
       </Dialog>

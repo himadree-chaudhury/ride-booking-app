@@ -76,7 +76,7 @@ const Hero = () => {
             animate={{ y: [-50, 10, 0], opacity: [0, 0.2, 0.5, 0.8, 1] }}
             transition={{ delay: 2, duration: 1, ease: "easeInOut" }}
           >
-            <Button>
+            <Button asChild>
               <Link to="/booking">Book Now</Link>
             </Button>
           </motion.div>

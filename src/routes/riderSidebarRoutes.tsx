@@ -1,10 +1,10 @@
 import AllRides from "@/pages/common/AllRides";
+import Profile from "@/pages/common/Profile";
+import SetupContact from "@/pages/common/SetupContact";
+import { UpdateProfile } from "@/pages/common/UpdateProfile";
 import Analytics from "@/pages/rider/Analytics";
 import Booking from "@/pages/rider/Booking";
-import Emergency from "@/pages/rider/Emergency";
-import Profile from "@/pages/rider/Profile";
 import { RequestToBeDriver } from "@/pages/rider/RequestToBeDriver";
-import { UpdateProfile } from "@/pages/rider/UpdateProfile";
 import VerifyProfile from "@/pages/rider/VerifyProfile";
 import type { ISidebarRoute } from "@/types/route-type";
 
@@ -45,9 +45,9 @@ export const riderSidebarRoutes: ISidebarRoute[] = [
         Component: Booking,
       },
       {
-        title: "SOS",
-        url: "/rider/emergency",
-        Component: Emergency,
+        title: "SOS Contact",
+        url: "/rider/sos-contact",
+        Component: SetupContact,
       },
       {
         title: "See All Rides",

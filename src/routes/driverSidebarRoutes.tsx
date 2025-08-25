@@ -1,5 +1,5 @@
+import Profile from "@/pages/common/Profile";
 import Analytics from "@/pages/driver/Analytics";
-import Profile from "@/pages/driver/Profile";
 import type { ISidebarRoute } from "@/types/route-type";
 
 export const driverSidebarRoutes: ISidebarRoute[] = [

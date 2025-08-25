@@ -238,7 +238,7 @@ const Analytics = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={320}>
               <BarChart
                 data={weeklyRideData}
                 margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
@@ -283,7 +283,7 @@ const Analytics = () => {
             <CardDescription>Breakdown of your rides by status</CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={320}>
               <PieChart>
                 <Pie
                   data={rideStatusData}

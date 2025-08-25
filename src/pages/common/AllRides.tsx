@@ -21,7 +21,7 @@ import {
   MapPin,
 } from "lucide-react";
 import { Link } from "react-router";
-import Emergency from "../rider/Emergency";
+import Emergency from "./Emergency";
 
 const AllRides = () => {
   const { data: user } = useGetUserQuery(undefined);
@@ -139,13 +139,13 @@ const AllRides = () => {
                   </TableCell>
                   <TableCell className="font-medium">${ride?.fare}</TableCell>
                   <TableCell>
-                    <Link
-                      to={`/${user?.data?.role && user.data.role.toLowerCase()}/ride-details/${ride?._id}`}
-                    >
-                      <Button variant="outline" size="sm">
+                    <Button asChild variant="outline" size="sm">
+                      <Link
+                        to={`/${user?.data?.role && user.data.role.toLowerCase()}/ride-details/${ride?._id}`}
+                      >
                         View Details
-                      </Button>
-                    </Link>
+                      </Link>
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))

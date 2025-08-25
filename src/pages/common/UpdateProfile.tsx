@@ -27,7 +27,11 @@ const updateSchema = z.object({
     .string("Please enter your name")
     .max(100, "Name must be at most 100 characters long")
     .optional(),
-  phone: z.string("Please enter a valid phone number").optional(),
+  phone: z
+    .string("Please enter a valid phone number")
+    .min(10, "Phone number must be at least 10 characters long")
+    .max(15, "Phone number must be at most 15 characters long")
+    .optional(),
   picture: z
     .url("Please enter a valid picture URL")
     .optional()
@@ -78,7 +82,7 @@ export function UpdateProfile({
       className={cn("mx-auto flex max-w-sm flex-col gap-6", className)}
       {...props}
     >
-      {!user.isVerified ? (
+      {!user?.isVerified ? (
         <p className="text-destructive text-center text-sm">
           Your profile is not verified. Please verify your profile to continue.
         </p>
@@ -153,16 +157,16 @@ export function UpdateProfile({
       </div>
 
       <div className="text-center text-sm">
-        {!user.isVerified ? "Want to get verified?" : "Already updated?"}{" "}
-        {!user.isVerified ? (
+        {!user?.isVerified ? "Want to get verified?" : "Already updated?"}{" "}
+        {!user?.isVerified ? (
           <Link
-            to="/rider/verify"
+            to={`/${user?.role && user?.role.toLowerCase()}/verify`}
             className="underline underline-offset-4"
           >
             Get Verified
           </Link>
         ) : (
-          <Link to="/rider/profile" className="underline underline-offset-4">
+          <Link to={`/${user?.role && user?.role.toLowerCase()}/profile`} className="underline underline-offset-4">
             Visit Profile
           </Link>
         )}
