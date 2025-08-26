@@ -6,8 +6,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useGetAllRidesQuery } from "@/redux/features/ride.api";
 import { useAdminStatsQuery } from "@/redux/features/stat.api";
 import type { IAdminStats } from "@/types/admin.type";
+import type { IRide } from "@/types/ride-type";
 import {
   Activity,
   Car,
@@ -33,7 +35,25 @@ import {
 
 const Analytics = () => {
   const { data: stats, isLoading } = useAdminStatsQuery(undefined);
+  const { data: ridesData, isLoading: isLoadingRides } =
+    useGetAllRidesQuery(undefined);
+  const ridesStats: IRide[] = ridesData?.data;
   const adminStats: IAdminStats = stats?.data;
+
+  const weeklyRideData = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
+    (day) => ({
+      day,
+      rides: 0,
+      revenue: 0,
+    }),
+  );
+  ridesStats?.forEach((ride: IRide) => {
+    const rideDate = new Date(ride.createdAt);
+    const dayIndex = rideDate.getDay();
+
+    weeklyRideData[dayIndex].rides += 1;
+    weeklyRideData[dayIndex].revenue += ride.fare ?? 0;
+  });
 
   const rideStatusData = [
     {
@@ -63,17 +83,9 @@ const Analytics = () => {
     },
   ];
 
-  const weeklyRideData = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
-    (day) => ({
-      day,
-      rides: Math.floor(Math.random() * 50), // Placeholder: Replace with actual data
-      revenue: Math.floor(Math.random() * 1000), // Placeholder: Replace with actual data
-    }),
-  );
-
   const COLORS = ["#22c55e", "#ef4444", "#3b82f6", "#f59e0b", "#8b5cf6"];
 
-  if (isLoading) {
+  if (isLoading || isLoadingRides) {
     return <StatSkeleton />;
   }
 
@@ -178,12 +190,21 @@ const Analytics = () => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="day" />
                 <YAxis yAxisId="left" />
-                <YAxis yAxisId="right" orientation="right" />
+                <YAxis
+                  yAxisId="right"
+                  orientation="right"
+                  tickFormatter={(val) => `$${val}`}
+                />
                 <Tooltip
-                  formatter={(value, name) => [
-                    name === "revenue" ? `$${value}` : value,
-                    name === "revenue" ? "Revenue" : "Rides",
-                  ]}
+                  formatter={(value, name) => {
+                    if (name === "rides") {
+                      return [value, "Rides"];
+                    }
+                    if (name === "revenue") {
+                      return [`$${Number(value).toFixed(2)}`, "Revenue"];
+                    }
+                    return [value, name];
+                  }}
                 />
                 <Legend />
                 <Bar

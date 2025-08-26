@@ -6,8 +6,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useGetAllDriversQuery } from "@/redux/features/admin.api";
 import { useDriverStatsQuery } from "@/redux/features/stat.api";
-import type { IDriverStats } from "@/types/admin.type";
+import type { IAllDrivers, IDriverStats } from "@/types/admin.type";
 import {
   Activity,
   CheckCircle,
@@ -31,9 +32,31 @@ import {
 } from "recharts";
 
 const Drivers = () => {
-
   const { data: stats, isLoading } = useDriverStatsQuery(undefined);
   const driverStats: IDriverStats = stats?.data;
+  const { data: driversData, isLoading: isLoadingUsers } =
+    useGetAllDriversQuery(undefined);
+  const allDrivers: IAllDrivers[] = driversData?.data;
+
+  const weeklyDriverData = [
+    "Sun",
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat",
+  ].map((day) => ({
+    day,
+    newDrivers: 0,
+  }));
+
+  allDrivers?.forEach((driver: IAllDrivers) => {
+    const userDate = new Date(driver?.createdAt);
+    const dayIndex = userDate.getDay();
+
+    weeklyDriverData[dayIndex].newDrivers += 1;
+  });
 
   const driverStatusData = [
     {
@@ -54,22 +77,9 @@ const Drivers = () => {
     { name: "Rated", value: driverStats?.ratedDrivers ?? 0, color: "#f59e0b" },
   ];
 
-  const weeklyDriverData = [
-    "Mon",
-    "Tue",
-    "Wed",
-    "Thu",
-    "Fri",
-    "Sat",
-    "Sun",
-  ].map((day) => ({
-    day,
-    newDrivers: Math.floor(Math.random() * 15), // Placeholder: Replace with actual data
-  }));
-
   const COLORS = ["#22c55e", "#ef4444", "#3b82f6", "#f59e0b"];
 
-  if (isLoading) {
+  if (isLoading || isLoadingUsers) {
     return <StatSkeleton />;
   }
 

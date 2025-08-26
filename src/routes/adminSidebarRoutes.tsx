@@ -1,8 +1,9 @@
 import Analytics from "@/pages/admin/Analytics";
 import DriverControl from "@/pages/admin/DriverControl";
 import Drivers from "@/pages/admin/Drivers";
-import RiderControl from "@/pages/admin/RiderControl";
+import RiderControl from "@/pages/admin/UserControl";
 import Users from "@/pages/admin/Users";
+import AllRides from "@/pages/common/AllRides";
 import Profile from "@/pages/common/Profile";
 import SetupContact from "@/pages/common/SetupContact";
 import { UpdateProfile } from "@/pages/common/UpdateProfile";
@@ -42,14 +43,19 @@ export const adminSidebarRoutes: ISidebarRoute[] = [
     url: "#",
     items: [
       {
-        title: "Rider",
-        url: "/admin/all-riders",
+        title: "Users",
+        url: "/admin/all-users",
         Component: RiderControl,
       },
       {
-        title: "Driver",
+        title: "Drivers",
         url: "/admin/all-drivers",
         Component: DriverControl,
+      },
+      {
+        title: "Rides",
+        url: "/admin/all-rides",
+        Component: AllRides,
       },
     ],
   },
@@ -58,7 +64,7 @@ export const adminSidebarRoutes: ISidebarRoute[] = [
     url: "#",
     items: [
       {
-        title: "Rides",
+        title: "Analytics",
         url: "/admin/analytics",
         Component: Analytics,
       },

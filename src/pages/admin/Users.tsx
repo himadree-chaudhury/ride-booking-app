@@ -6,8 +6,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useGetAllUsersQuery } from "@/redux/features/admin.api";
 import { useUserStatsQuery } from "@/redux/features/stat.api";
-import type { IUserStats } from "@/types/admin.type";
+import type { IAllUsers, IUserStats } from "@/types/admin.type";
 import {
   Activity,
   CheckCircle,
@@ -33,6 +34,23 @@ import {
 const Users = () => {
   const { data: stats, isLoading } = useUserStatsQuery(undefined);
   const userStats: IUserStats = stats?.data;
+  const { data: usersData, isLoading: isLoadingUsers } =
+    useGetAllUsersQuery(undefined);
+  const allUsers: IAllUsers[] = usersData?.data;
+
+  const weeklyUserData = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
+    (day) => ({
+      day,
+      newUsers: 0,
+    }),
+  );
+
+  allUsers?.forEach((user: IAllUsers) => {
+    const userDate = new Date(user?.createdAt);
+    const dayIndex = userDate.getDay();
+
+    weeklyUserData[dayIndex].newUsers += 1;
+  });
 
   const userStatusData = [
     {
@@ -44,16 +62,9 @@ const Users = () => {
     { name: "Deleted", value: userStats?.deletedUsers ?? 0, color: "#6b7280" },
   ];
 
-  const weeklyUserData = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
-    (day) => ({
-      day,
-      newUsers: Math.floor(Math.random() * 20), // Placeholder: Replace with actual data
-    }),
-  );
-
   const COLORS = ["#22c55e", "#ef4444", "#6b7280", "#3b82f6", "#f59e0b"];
 
-  if (isLoading) {
+  if (isLoading || isLoadingUsers) {
     return <StatSkeleton />;
   }
 

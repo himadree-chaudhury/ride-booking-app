@@ -18,7 +18,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useGetAllDriversQuery } from "@/redux/features/admin.api";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
+import {
+  useDriverSuspenseToggleMutation,
+  useGetAllDriversQuery,
+  useToggleApproveDriverMutation,
+} from "@/redux/features/admin.api";
 import type { IAllDrivers } from "@/types/admin.type";
 import type { IResponseError } from "@/types/error-type";
 import {
@@ -41,6 +51,8 @@ import { toast } from "sonner";
 
 const DriverControl = () => {
   const { data, isLoading } = useGetAllDriversQuery(undefined);
+  const [toggleApproveDriver] = useToggleApproveDriverMutation();
+  const [driverSuspenseToggle] = useDriverSuspenseToggleMutation();
   const allDrivers: IAllDrivers[] = data?.data || [];
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedDriver, setSelectedDriver] = useState<IAllDrivers | null>(
@@ -58,10 +70,13 @@ const DriverControl = () => {
   const handleToggleSuspend = async (driver: IAllDrivers) => {
     const toastId = toast.loading("Updating driver status...");
     try {
-      toast.success(
-        `Driver ${driver.isSuspended ? "un-suspended" : "suspended"} successfully`,
-        { id: toastId },
-      );
+      const response = await driverSuspenseToggle(driver._id).unwrap();
+      if (response.success) {
+        toast.success(
+          `Driver ${driver.isSuspended ? "un-suspended" : "suspended"} successfully`,
+          { id: toastId },
+        );
+      }
     } catch (error: unknown) {
       const err = (error as unknown as { data: IResponseError }).data;
       toast.error(`${err.status}: ${err.message}`, { id: toastId });
@@ -72,11 +87,15 @@ const DriverControl = () => {
 
   const handleToggleApproval = async (driver: IAllDrivers) => {
     const toastId = toast.loading("Updating driver approval status...");
+
     try {
-      toast.success(
-        `Driver ${driver.isApproved ? "unapproved" : "approved"} successfully`,
-        { id: toastId },
-      );
+      const response = await toggleApproveDriver(driver._id).unwrap();
+      if (response.success) {
+        toast.success(
+          `Driver ${driver.isApproved ? "unapproved" : "approved"} successfully`,
+          { id: toastId },
+        );
+      }
     } catch (error: unknown) {
       const err = (error as unknown as { data: IResponseError }).data;
       toast.error(`${err.status}: ${err.message}`, { id: toastId });
@@ -142,30 +161,51 @@ const DriverControl = () => {
             ) : (
               allDrivers?.map((driver: IAllDrivers) => (
                 <TableRow key={driver?._id} className="hover:bg-muted/30">
-                  <TableCell className="font-medium">
-                    {driver?.userId.name}
+                  <TableCell
+                    className={`font-medium ${cn(driver?.isSuspended && "line-through decoration-red-500 decoration-[3px]", !driver?.isApproved && "text-muted-foreground")}`}
+                  >
+                    {driver?.userId?.name.substring(0, 20)}{" "}
+                    {driver?.isApproved && (
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Badge variant="outline">A</Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Driver is approved</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+                    {driver?.isSuspended && (
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Badge variant="destructive">S</Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Driver is suspended</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+                    {!driver?.isApproved && (
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Badge variant="secondary">P</Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Driver approval is pending</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
                   </TableCell>
                   <TableCell>
                     <div>
-                      {driver?.vehicleInfo.model} ({driver?.vehicleInfo.year})
+                      {driver?.vehicleInfo.model.substring(0, 20)} (
+                      {driver?.vehicleInfo.year})
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge
-                      variant={driver.isApproved ? "default" : "destructive"}
-                    >
-                      {driver.isApproved ? "Approved" : "Pending"}
+                    <Badge variant={driver.isAvailable ? "build" : "process"}>
+                      {driver.isAvailable ? "Online" : "Offline"}
                     </Badge>
-                    {driver.isSuspended && (
-                      <Badge variant="destructive" className="ml-2">
-                        Suspended
-                      </Badge>
-                    )}
-                    {driver.isOnline && (
-                      <Badge variant="success" className="ml-2">
-                        Online
-                      </Badge>
-                    )}
                   </TableCell>
                   <TableCell>{formatDate(driver?.createdAt)}</TableCell>
                   <TableCell>
@@ -278,8 +318,13 @@ const DriverControl = () => {
                   </span>
                 </div>
                 <div className="flex items-center">
-                  <CheckCircle className="text-muted-foreground mr-2 h-5 w-5" />
-                  <span>Online: {selectedDriver.isOnline ? "Yes" : "No"}</span>
+                  <ScanEye className="text-muted-foreground mr-2 h-5 w-5" />
+                  <span className="mr-2">Status:</span>
+                  <Badge
+                    variant={selectedDriver?.isAvailable ? "build" : "process"}
+                  >
+                    {selectedDriver?.isAvailable ? "Online" : "Offline"}
+                  </Badge>
                 </div>
                 <div className="flex items-center">
                   <Signpost className="text-muted-foreground mr-2 h-5 w-5" />

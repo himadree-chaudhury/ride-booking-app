@@ -59,7 +59,7 @@ axiosInstance.interceptors.response.use(
 
     // Check if the error is due to an expired token
     if (
-      error.response.status === httpStatus.UNAUTHORIZED &&
+      error.response.data.status === httpStatus.UNAUTHORIZED &&
       error.response.data.message === "Invalid or expired token." &&
       !originalRequest._retry
     ) {

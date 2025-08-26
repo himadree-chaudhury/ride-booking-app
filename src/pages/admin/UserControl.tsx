@@ -19,8 +19,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { UserRole } from "@/constants/role";
-import { useGetAllUsersQuery } from "@/redux/features/admin.api";
+import { cn } from "@/lib/utils";
+import {
+  useBlockUserMutation,
+  useDeleteUserMutation,
+  useGetAllUsersQuery,
+  useUnblockUserMutation,
+} from "@/redux/features/admin.api";
 import type { IAllUsers } from "@/types/admin.type";
 import type { IResponseError } from "@/types/error-type";
 import type { TUserRole } from "@/types/user-type";
@@ -41,10 +52,12 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 
-const RiderControl = () => {
+const UserControl = () => {
   const { data, isLoading } = useGetAllUsersQuery(undefined);
-  //   const [updateUserStatus] = useUpdateUserStatusMutation();
   const allUsers: IAllUsers[] = data?.data || [];
+  const [blockUser] = useBlockUserMutation();
+  const [unblockUser] = useUnblockUserMutation();
+  const [deleteUser] = useDeleteUserMutation();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<IAllUsers | null>(null);
 
@@ -69,17 +82,14 @@ const RiderControl = () => {
     });
   };
 
-  const handleToggleBlock = async (user: IAllUsers) => {
+  const handleBlock = async (id: IAllUsers["_id"]) => {
     const toastId = toast.loading("Updating user status...");
     try {
-      //   await updateUserStatus({
-      //     id: user._id,
-      //     isBlocked: !user.isBlocked,
-      //   }).unwrap();
-      toast.success(
-        `User ${user.isBlocked ? "unblocked" : "blocked"} successfully`,
-        { id: toastId },
-      );
+      const response = await blockUser(id).unwrap();
+      console.log(response);
+      if (response.success) {
+        toast.success(`User blocked successfully`, { id: toastId });
+      }
     } catch (error: unknown) {
       const err = (error as unknown as { data: IResponseError }).data;
       toast.error(`${err.status}: ${err.message}`, { id: toastId });
@@ -88,12 +98,29 @@ const RiderControl = () => {
     }
   };
 
-  const handleDeleteUser = async (user: IAllUsers) => {
+  const handleUnblock = async (id: IAllUsers["_id"]) => {
+    const toastId = toast.loading("Updating user status...");
+    try {
+      const response = await unblockUser(id).unwrap();
+      if (response.success) {
+        toast.success(`User unblocked successfully`, { id: toastId });
+      }
+    } catch (error: unknown) {
+      const err = (error as unknown as { data: IResponseError }).data;
+      toast.error(`${err.status}: ${err.message}`, { id: toastId });
+    } finally {
+      setIsModalOpen(false);
+    }
+  };
+
+  const handleDeleteUser = async (id: IAllUsers["_id"]) => {
+    console.log(id);
     const toastId = toast.loading("Deleting user...");
     try {
-      //   await updateUserStatus({ id: user._id, isDeleted: true }).unwrap();
-      toast.success("User deleted successfully", { id: toastId });
-      setIsModalOpen(false);
+      const response = await deleteUser(id).unwrap();
+      if (response.success) {
+        toast.success("User deleted successfully", { id: toastId });
+      }
     } catch (error: unknown) {
       const err = (error as unknown as { data: IResponseError }).data;
       toast.error(`${err.status}: ${err.message}`, { id: toastId });
@@ -108,7 +135,7 @@ const RiderControl = () => {
 
   return (
     <div className="container mx-auto">
-      <title>All Riders | Cabsy </title>
+      <title>All Users | Cabsy </title>
       <div className="rounded-lg border shadow-sm">
         <Table>
           <TableCaption className="my-2">
@@ -159,8 +186,34 @@ const RiderControl = () => {
             ) : (
               allUsers?.map((user: IAllUsers) => (
                 <TableRow key={user?._id} className="hover:bg-muted/30">
-                  <TableCell className="font-medium">{user?.name}</TableCell>
-                  <TableCell>
+                  <TableCell
+                    className={`font-medium ${cn(user.isDeleted && "line-through decoration-red-500 decoration-[3px]", user.isBlocked && "text-muted-foreground")}`}
+                  >
+                    {user?.name.substring(0, 20)}{" "}
+                    {user.isBlocked && (
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Badge variant="secondary">B</Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>User is blocked</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+                    {user.isDeleted && (
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Badge variant="secondary">D</Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>User is deleted</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+                  </TableCell>
+                  <TableCell
+                    className={`${cn(user.isDeleted && "line-through decoration-red-500 decoration-[3px]", user.isBlocked && "text-muted-foreground")}`}
+                  >
                     <div>
                       {user?.email && `${user.email.substring(0, 20)}...`}
                     </div>
@@ -254,6 +307,7 @@ const RiderControl = () => {
                 </div>
                 <div className="flex items-center">
                   <ScanEye className="text-muted-foreground mr-2 h-5 w-5" />
+                  <span className="mr-2">Role:</span>
                   <Badge
                     variant={getRoleVariant(selectedUser.role as TUserRole)}
                   >
@@ -308,7 +362,11 @@ const RiderControl = () => {
                 <div className="mt-4 flex space-x-2">
                   <Button
                     variant={selectedUser.isBlocked ? "default" : "destructive"}
-                    onClick={() => handleToggleBlock(selectedUser)}
+                    onClick={
+                      selectedUser.isBlocked
+                        ? () => handleUnblock(selectedUser._id)
+                        : () => handleBlock(selectedUser._id)
+                    }
                     disabled={selectedUser.isDeleted}
                   >
                     {selectedUser.isBlocked ? (
@@ -321,7 +379,7 @@ const RiderControl = () => {
                   {!selectedUser.isDeleted && (
                     <Button
                       variant="destructive"
-                      onClick={() => handleDeleteUser(selectedUser)}
+                      onClick={() => handleDeleteUser(selectedUser._id)}
                     >
                       <Trash2 className="mr-2 h-4 w-4" />
                       Delete User
@@ -337,4 +395,4 @@ const RiderControl = () => {
   );
 };
 
-export default RiderControl;
+export default UserControl;

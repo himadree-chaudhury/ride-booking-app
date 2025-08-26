@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { UserRole } from "@/constants/role";
 import { useGetAllRidesQuery } from "@/redux/features/ride.api";
 import { useGetUserQuery } from "@/redux/features/user.api";
 import type { IRide, RideStatus } from "@/types/ride-type";
@@ -61,9 +62,10 @@ const AllRides = () => {
 
   return (
     <div>
-      {allRides?.some(
-        (ride) => ride.status === "IN_TRANSIT" || ride.status === "PICKED_UP",
-      ) && <Emergency />}
+      {user.role === UserRole.RIDER &&
+        allRides?.some(
+          (ride) => ride.status === "IN_TRANSIT" || ride.status === "PICKED_UP",
+        ) && <Emergency />}
       <title>All Rides | Cabsy</title>
       <div className="rounded-lg border shadow-sm">
         <Table>
@@ -138,7 +140,7 @@ const AllRides = () => {
                       {ride?.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="font-medium">${ride?.fare}</TableCell>
+                  <TableCell className="font-medium">{ride?.fare.toFixed(2)}</TableCell>
                   <TableCell>
                     <Button asChild variant="outline" size="sm">
                       <Link

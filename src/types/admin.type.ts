@@ -69,7 +69,6 @@ export interface IAllDrivers {
   updatedAt: string;
   isApproved: boolean;
   isSuspended: boolean;
-  isOnline: boolean;
 }
 
 interface IDriverId {

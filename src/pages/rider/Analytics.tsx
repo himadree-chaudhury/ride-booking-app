@@ -39,18 +39,17 @@ const Analytics = () => {
   const { data: stats, isLoading } = useRiderPersonalStatsQuery(undefined);
   const riderStats: IRiderRideSummary = stats?.data;
 
-  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const weeklyRideData = daysOfWeek.map((day) => ({
+  const weeklyRideData = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => ({
     day,
     rides: 0,
     fare: 0,
   }));
   riderStats?.myAllRides?.forEach((ride) => {
     const rideDate = new Date(ride.createdAt);
-    const dayIndex = rideDate.getDay(); // 0=Sun, 1=Mon, ...
+    const dayIndex = rideDate.getDay();
 
     weeklyRideData[dayIndex].rides += 1;
-    weeklyRideData[dayIndex].fare += ride.fare ?? 0; // assuming `ride.fare` exists
+    weeklyRideData[dayIndex].fare += ride.fare ?? 0;
   });
 
   const rideStatusData = [
