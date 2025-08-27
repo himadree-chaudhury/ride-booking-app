@@ -14,9 +14,10 @@ export interface IRide {
     name: string;
     phone: string;
   };
-  status: string;
+  status: RideStatus;
   requestedAt: string;
   cancelledAt?: string;
+  acceptedAt?: string;
   canceller?: "RIDER" | "DRIVER";
   pickedUpAt?: string;
   transitAt?: string;

@@ -79,9 +79,7 @@ const RideHistory = () => {
         <p className="text-muted-foreground mb-4">
           The ride you're looking for doesn't exist.
         </p>
-        <Button onClick={() => window.history.back()}>
-          Go Back
-        </Button>
+        <Button onClick={() => window.history.back()}>Go Back</Button>
       </div>
     );
   }
@@ -181,6 +179,19 @@ const RideHistory = () => {
                     </p>
                   </div>
                 </div>
+                {rideDetails?.acceptedAt && (
+                  <div className="space-y-1">
+                    <p className="text-muted-foreground text-sm">
+                      Accepted At
+                    </p>
+                    <div className="flex items-center">
+                      <Clock className="text-muted-foreground mr-2 h-4 w-4" />
+                      <p className="font-medium">
+                        {formatDate(rideDetails?.acceptedAt)}
+                      </p>
+                    </div>
+                  </div>
+                )}
                 {rideDetails?.pickedUpAt && (
                   <div className="space-y-1">
                     <p className="text-muted-foreground text-sm">
@@ -432,7 +443,7 @@ const RideHistory = () => {
               <Button variant="outline" className="w-full">
                 Report Issue
               </Button>
-              {rideDetails?.status === "completed" && (
+              {rideDetails?.status === "COMPLETED" && (
                 <Button variant="outline" className="w-full">
                   Rate Ride
                 </Button>

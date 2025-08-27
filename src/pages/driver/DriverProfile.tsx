@@ -214,9 +214,13 @@ const DriverProfile = () => {
             <MapPin className="text-muted-foreground h-5 w-5" />
             <div>
               <p className="text-muted-foreground text-sm">Current Location</p>
-              <p className="font-medium">
-                ({driver?.currentLocation.latitude},{" "}
-                {driver?.currentLocation.longitude})
+              <p className="grid font-medium">
+                <span>
+                  Latitude: {driver?.currentLocation.latitude.toFixed(4)}
+                </span>
+                <span>
+                  Longitude: {driver?.currentLocation.longitude.toFixed(4)}
+                </span>
               </p>
             </div>
           </div>

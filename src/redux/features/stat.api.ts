@@ -8,6 +8,12 @@ export const statsApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+    driverPersonalStats: builder.query({
+      query: () => ({
+        url: "/stat/driver-stats",
+        method: "GET",
+      }),
+    }),
     adminStats: builder.query({
       query: () => ({
         url: "/stat/rides",
@@ -29,4 +35,4 @@ export const statsApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useRiderPersonalStatsQuery, useAdminStatsQuery, useUserStatsQuery, useDriverStatsQuery } = statsApi;
+export const { useRiderPersonalStatsQuery, useDriverPersonalStatsQuery, useAdminStatsQuery, useUserStatsQuery, useDriverStatsQuery } = statsApi;

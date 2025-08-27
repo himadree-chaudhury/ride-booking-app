@@ -18,10 +18,36 @@ import ReactourProvider, {
   TourController,
 } from "@/providers/reactour.provider";
 
-import { Outlet, useLocation } from "react-router";
+import { useLogoutMutation } from "@/redux/features/auth.api";
+import { userApi } from "@/redux/features/user.api";
+import { useAppDispatch } from "@/redux/store";
+import type { IResponseError } from "@/types/error-type";
+import { LogOut } from "lucide-react";
+import { Outlet, useLocation, useNavigate } from "react-router";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
 
 export default function DashboardLayout() {
   const location = useLocation();
+  const [logout] = useLogoutMutation();
+  const dispatch = useAppDispatch();
+
+  const navigate = useNavigate();
+
+  // *Logout handler
+  const handleLogout = async () => {
+    const toastId = toast.loading("Logging out...");
+
+    try {
+      await logout(undefined);
+      toast.success("Logged out successfully", { id: toastId });
+      dispatch(userApi.util.resetApiState());
+      navigate("/sign-in");
+    } catch (error) {
+      const err = (error as unknown as { data: IResponseError }).data;
+      toast.error(`${err.status}: ${err.message}`, { id: toastId });
+    }
+  };
 
   return (
     <ReactourProvider>
@@ -57,8 +83,16 @@ export default function DashboardLayout() {
                 </BreadcrumbList>
               </Breadcrumb>
             </div>
-            <div className="mode-toggle">
-              <ModeToggle />
+            <div className="flex items-center justify-center gap-4">
+              <div className="mode-toggle">
+                <ModeToggle />
+              </div>
+              <div className="logout">
+                <Button size="sm" className="flex gap-2" onClick={handleLogout}>
+                  <span>Logout</span>
+                  <LogOut className="font-bold" />
+                </Button>
+              </div>
             </div>
           </header>
           <main className="section-layout container mx-auto">

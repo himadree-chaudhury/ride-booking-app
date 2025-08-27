@@ -12,15 +12,14 @@ import PillNav from "../ui/PillNav";
 const Navbar = () => {
   const { data } = useGetUserQuery(undefined);
   const userData: IUser = data?.data;
+  const location = useLocation();
   const [logout] = useLogoutMutation();
   const dispatch = useAppDispatch();
 
-  const location = useLocation();
   const navigate = useNavigate();
 
   // *Logout handler
-  const handleLogout = async (e?: React.MouseEvent) => {
-    e?.preventDefault();
+  const handleLogout = async () => {
     const toastId = toast.loading("Logging out...");
     if (userData) {
       try {
