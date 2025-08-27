@@ -10,6 +10,25 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -34,6 +53,7 @@ import {
 } from "@/redux/features/admin.api";
 import type { IAllUsers } from "@/types/admin.type";
 import type { IResponseError } from "@/types/error-type";
+import type { IPaginate } from "@/types/paginate.type";
 import type { TUserRole } from "@/types/user-type";
 import {
   CheckCircle,
@@ -49,12 +69,36 @@ import {
   User,
   XCircle,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const UserControl = () => {
-  const { data, isLoading } = useGetAllUsersQuery(undefined);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [sortField, setSortField] = useState<keyof IAllUsers>("createdAt");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  // Debounce search to avoid too many API calls
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  const { data, isLoading, isFetching } = useGetAllUsersQuery({
+    page: page,
+    limit: limit,
+    sort: sortField,
+    order: sortOrder,
+    searchTerm: debouncedSearch,
+  });
+
   const allUsers: IAllUsers[] = data?.data || [];
+  const meta: IPaginate | undefined = data?.meta;
+
   const [blockUser] = useBlockUserMutation();
   const [unblockUser] = useUnblockUserMutation();
   const [deleteUser] = useDeleteUserMutation();
@@ -64,11 +108,11 @@ const UserControl = () => {
   const getRoleVariant = (role: TUserRole) => {
     switch (role) {
       case UserRole.RIDER:
-        return "build";
+        return "secondary";
       case UserRole.DRIVER:
-        return "process";
-      case UserRole.ADMIN:
         return "default";
+      case UserRole.ADMIN:
+        return "destructive";
       default:
         return "outline";
     }
@@ -86,13 +130,15 @@ const UserControl = () => {
     const toastId = toast.loading("Updating user status...");
     try {
       const response = await blockUser(id).unwrap();
-      console.log(response);
       if (response.success) {
         toast.success(`User blocked successfully`, { id: toastId });
       }
     } catch (error: unknown) {
-      const err = (error as unknown as { data: IResponseError }).data;
-      toast.error(`${err.status}: ${err.message}`, { id: toastId });
+      const err = (error as { data: IResponseError }).data;
+      toast.error(
+        `${err?.status || "Error"}: ${err?.message || "Something went wrong"}`,
+        { id: toastId },
+      );
     } finally {
       setIsModalOpen(false);
     }
@@ -106,15 +152,17 @@ const UserControl = () => {
         toast.success(`User unblocked successfully`, { id: toastId });
       }
     } catch (error: unknown) {
-      const err = (error as unknown as { data: IResponseError }).data;
-      toast.error(`${err.status}: ${err.message}`, { id: toastId });
+      const err = (error as { data: IResponseError }).data;
+      toast.error(
+        `${err?.status || "Error"}: ${err?.message || "Something went wrong"}`,
+        { id: toastId },
+      );
     } finally {
       setIsModalOpen(false);
     }
   };
 
   const handleDeleteUser = async (id: IAllUsers["_id"]) => {
-    console.log(id);
     const toastId = toast.loading("Deleting user...");
     try {
       const response = await deleteUser(id).unwrap();
@@ -122,20 +170,152 @@ const UserControl = () => {
         toast.success("User deleted successfully", { id: toastId });
       }
     } catch (error: unknown) {
-      const err = (error as unknown as { data: IResponseError }).data;
-      toast.error(`${err.status}: ${err.message}`, { id: toastId });
+      const err = (error as { data: IResponseError }).data;
+      toast.error(
+        `${err?.status || "Error"}: ${err?.message || "Something went wrong"}`,
+        { id: toastId },
+      );
     } finally {
       setIsModalOpen(false);
     }
   };
 
-  if (isLoading) {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    setPage(1);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= (meta?.totalPages || 1)) {
+      setPage(newPage);
+    }
+  };
+
+  // Generate pagination items
+  const generatePaginationItems = () => {
+    if (!meta) return [];
+
+    const items = [];
+    const totalPages = meta.totalPages;
+    const currentPage = page;
+
+    // Always show first page
+    items.push(1);
+
+    if (totalPages <= 2) {
+      // Show all pages if total pages <= 2
+      for (let i = 2; i <= totalPages; i++) {
+        items.push(i);
+      }
+    } else {
+      if (currentPage <= 2) {
+        for (let i = 2; i <= 2; i++) {
+          items.push(i);
+        }
+        items.push("ellipsis");
+        items.push(totalPages);
+      } else if (currentPage > totalPages - 2) {
+        items.push("ellipsis");
+        for (let i = totalPages - 1; i <= totalPages; i++) {
+          items.push(i);
+        }
+      } else {
+        items.push("ellipsis");
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          items.push(i);
+        }
+        items.push("ellipsis");
+        items.push(totalPages);
+      }
+    }
+
+    return items;
+  };
+
+  if (isLoading || isFetching) {
     return <LoadingSpinner />;
   }
 
+  console.log({
+    page,
+    limit,
+    sortField,
+    sortOrder,
+    searchTerm: debouncedSearch,
+  });
+
   return (
     <div className="container mx-auto">
-      <title>All Users | Cabsy </title>
+      <title>All Users | Cabsy</title>
+      <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        {/* Search */}
+        <Input
+          type="text"
+          placeholder="Search by name or email..."
+          value={search}
+          onChange={handleSearchChange}
+          className="md:w-1/3"
+        />
+
+        <div className="flex items-center gap-3">
+          {/* Sort Field */}
+          <Select
+            value={sortField}
+            onValueChange={(value) => setSortField(value as keyof IAllUsers)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select Sort Field" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Sort Fields</SelectLabel>
+                <SelectItem value="createdAt">Created At</SelectItem>
+                <SelectItem value="name">Name</SelectItem>
+                <SelectItem value="email">Email</SelectItem>
+                <SelectItem value="role">Role</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+
+          {/* Sort Order */}
+          <Select
+            value={sortOrder}
+            onValueChange={(value) => setSortOrder(value as "asc" | "desc")}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Sort By..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Sort Option</SelectLabel>
+                <SelectItem value="asc">Ascending</SelectItem>
+                <SelectItem value="desc">Descending</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+
+          {/* Limit */}
+          <Select
+            value={String(limit)}
+            onValueChange={(value) => setLimit(Number(value))}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Limit..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Sort Option</SelectLabel>
+                <SelectItem value="5">5</SelectItem>
+                <SelectItem value="10">10</SelectItem>
+                <SelectItem value="20">20</SelectItem>
+                <SelectItem value="50">50</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Users Table */}
       <div className="rounded-lg border shadow-sm">
         <Table>
           <TableCaption className="my-2">
@@ -143,7 +323,7 @@ const UserControl = () => {
           </TableCaption>
           <TableHeader>
             <TableRow className="bg-muted/60">
-              <TableHead className="flex items-center">
+              <TableHead>
                 <div className="flex items-center">
                   <User className="mr-2 h-4 w-4" />
                   Name
@@ -155,9 +335,11 @@ const UserControl = () => {
                   Email
                 </div>
               </TableHead>
-              <TableHead className="flex items-center">
-                <ScanEye className="mr-2 h-4 w-4" />
-                Role
+              <TableHead>
+                <div className="flex items-center">
+                  <ScanEye className="mr-2 h-4 w-4" />
+                  Role
+                </div>
               </TableHead>
               <TableHead>
                 <div className="flex items-center">
@@ -174,56 +356,64 @@ const UserControl = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {allUsers?.length === 0 ? (
+            {allUsers.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={5}
                   className="text-muted-foreground py-8 text-center"
                 >
                   No users found
                 </TableCell>
               </TableRow>
             ) : (
-              allUsers?.map((user: IAllUsers) => (
-                <TableRow key={user?._id} className="hover:bg-muted/30">
+              allUsers.map((user: IAllUsers) => (
+                <TableRow key={user._id} className="hover:bg-muted/30">
                   <TableCell
-                    className={`font-medium ${cn(user.isDeleted && "line-through decoration-red-500 decoration-[3px]", user.isBlocked && "text-muted-foreground")}`}
+                    className={`font-medium ${cn(
+                      user.isDeleted &&
+                        "line-through decoration-red-500 decoration-[3px]",
+                      user.isBlocked && "text-muted-foreground",
+                    )}`}
                   >
-                    {user?.name.substring(0, 20)}{" "}
-                    {user.isBlocked && (
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Badge variant="secondary">B</Badge>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>User is blocked</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    )}
-                    {user.isDeleted && (
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Badge variant="secondary">D</Badge>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>User is deleted</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    )}
-                  </TableCell>
-                  <TableCell
-                    className={`${cn(user.isDeleted && "line-through decoration-red-500 decoration-[3px]", user.isBlocked && "text-muted-foreground")}`}
-                  >
-                    <div>
-                      {user?.email && `${user.email.substring(0, 20)}...`}
+                    <div className="flex items-center gap-2">
+                      {user.name.substring(0, 20)}
+                      {user.isBlocked && (
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Badge variant="secondary">B</Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>User is blocked</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      )}
+                      {user.isDeleted && (
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Badge variant="destructive">D</Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>User is deleted</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      )}
                     </div>
                   </TableCell>
+                  <TableCell
+                    className={`${cn(
+                      user.isDeleted &&
+                        "line-through decoration-red-500 decoration-[3px]",
+                      user.isBlocked && "text-muted-foreground",
+                    )}`}
+                  >
+                    ${user.email.substring(0, 20)}
+                  </TableCell>
                   <TableCell>
-                    <Badge variant={getRoleVariant(user?.role as TUserRole)}>
-                      {user?.role}
+                    <Badge variant={getRoleVariant(user.role as TUserRole)}>
+                      {user.role}
                     </Badge>
                   </TableCell>
-                  <TableCell>{formatDate(user?.createdAt)}</TableCell>
+                  <TableCell>{formatDate(user.createdAt)}</TableCell>
                   <TableCell>
                     <Button
                       variant="outline"
@@ -243,18 +433,57 @@ const UserControl = () => {
       </div>
 
       {/* Pagination */}
-      {allUsers?.length > 0 && (
+      {meta && meta.totalDocs > 0 && (
         <div className="mt-4 flex items-center justify-between">
           <div className="text-muted-foreground text-sm">
-            Showing {allUsers?.length} users
+            Showing {(page - 1) * limit + 1}–
+            {Math.min(page * limit, meta.totalDocs)} of {meta.totalDocs} users
           </div>
-          <div className="flex space-x-2">
-            <Button variant="outline" size="sm" disabled>
-              Previous
-            </Button>
-            <Button variant="outline" size="sm">
-              Next
-            </Button>
+          <div>
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => handlePageChange(page - 1)}
+                    className={
+                      page === 1
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
+                  />
+                </PaginationItem>
+
+                {generatePaginationItems().map((item, index) => (
+                  <PaginationItem key={index}>
+                    {item === "ellipsis" ? (
+                      <PaginationEllipsis />
+                    ) : (
+                      <PaginationLink
+                        onClick={() => handlePageChange(item as number)}
+                        isActive={item === page}
+                        className={`bg-secondary cursor-pointer ${cn({
+                          "border-foreground": item === page,
+                          "text-muted-foreground": item !== page,
+                        })}`}
+                      >
+                        {item}
+                      </PaginationLink>
+                    )}
+                  </PaginationItem>
+                ))}
+
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() => handlePageChange(page + 1)}
+                    className={
+                      page === meta.totalPages
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </div>
         </div>
       )}
@@ -274,11 +503,11 @@ const UserControl = () => {
                 <CardTitle className="flex items-center gap-5">
                   <Avatar className="h-20 w-20">
                     <AvatarImage
-                      src={selectedUser?.picture}
-                      alt={selectedUser?.name}
+                      src={selectedUser.picture}
+                      alt={selectedUser.name}
                     />
                     <AvatarFallback className="text-lg font-bold">
-                      {selectedUser?.name
+                      {selectedUser.name
                         .split(" ")
                         .map((part) => part[0])
                         .join("")
@@ -336,7 +565,7 @@ const UserControl = () => {
                   <FilePen className="text-muted-foreground mr-2 h-5 w-5" />
                   <span>Updated: {formatDate(selectedUser.updatedAt)}</span>
                 </div>
-                {selectedUser.auths.length > 0 && (
+                {selectedUser.auths && selectedUser.auths.length > 0 && (
                   <div>
                     <h4 className="flex items-center font-medium">
                       <CircleArrowOutUpRight className="text-muted-foreground mr-2 h-5 w-5" />

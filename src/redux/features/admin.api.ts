@@ -1,11 +1,23 @@
 import { baseApi } from "@/redux/baseApi";
+import type { IAllDrivers, IAllUsers } from "@/types/admin.type";
+import type { IResponse } from "@/types/response.type";
 
 const adminApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getAllUsers: builder.query({
-      query: () => ({
+    getAllUsers: builder.query<
+      IResponse<IAllUsers[]>,
+      {
+        page: number;
+        limit: number;
+        sort: keyof IAllUsers;
+        order: "asc" | "desc";
+        searchTerm: string;
+      }
+    >({
+      query: ({ page, limit, sort, order, searchTerm }) => ({
         url: "/user",
         method: "GET",
+        params: { page, limit, sort, order, searchTerm },
       }),
       providesTags: ["AllUsers"],
     }),
@@ -30,10 +42,20 @@ const adminApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["AllUsers"],
     }),
-    getAllDrivers: builder.query({
-      query: () => ({
+    getAllDrivers: builder.query<
+      IResponse<IAllDrivers[]>,
+      {
+        page: number;
+        limit: number;
+        sort: keyof IAllDrivers;
+        order: "asc" | "desc";
+        searchTerm: string;
+      }
+    >({
+      query: ({ page, limit, sort, order, searchTerm }) => ({
         url: "/driver",
         method: "GET",
+        params: { page, limit, sort, order, searchTerm },
       }),
       providesTags: ["AllDrivers"],
     }),

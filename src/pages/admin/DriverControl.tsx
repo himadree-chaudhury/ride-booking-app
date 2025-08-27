@@ -9,6 +9,25 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -31,6 +50,7 @@ import {
 } from "@/redux/features/admin.api";
 import type { IAllDrivers } from "@/types/admin.type";
 import type { IResponseError } from "@/types/error-type";
+import type { IPaginate } from "@/types/paginate.type";
 import {
   CalendarX2,
   Car,
@@ -46,18 +66,41 @@ import {
   User,
   XCircle,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const DriverControl = () => {
-  const { data, isLoading } = useGetAllDriversQuery(undefined);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [sortField, setSortField] = useState<keyof IAllDrivers>("createdAt");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  // Debounce search to avoid too many API calls
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  const { data, isLoading, isFetching } = useGetAllDriversQuery({
+    page: page,
+    limit: limit,
+    sort: sortField,
+    order: sortOrder,
+    searchTerm: debouncedSearch,
+  });
   const [toggleApproveDriver] = useToggleApproveDriverMutation();
   const [driverSuspenseToggle] = useDriverSuspenseToggleMutation();
-  const allDrivers: IAllDrivers[] = data?.data || [];
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedDriver, setSelectedDriver] = useState<IAllDrivers | null>(
     null,
   );
+
+  const allDrivers: IAllDrivers[] = data?.data || [];
+  const meta: IPaginate | undefined = data?.meta;
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -104,13 +147,131 @@ const DriverControl = () => {
     }
   };
 
-  if (isLoading) {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    setPage(1);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= (meta?.totalPages || 1)) {
+      setPage(newPage);
+    }
+  };
+
+  // Generate pagination items
+  const generatePaginationItems = () => {
+    if (!meta) return [];
+
+    const items = [];
+    const totalPages = meta.totalPages;
+    const currentPage = page;
+
+    // Always show first page
+    items.push(1);
+
+    if (totalPages <= 2) {
+      // Show all pages if total pages <= 2
+      for (let i = 2; i <= totalPages; i++) {
+        items.push(i);
+      }
+    } else {
+      if (currentPage <= 2) {
+        for (let i = 2; i <= 2; i++) {
+          items.push(i);
+        }
+        items.push("ellipsis");
+        items.push(totalPages);
+      } else if (currentPage > totalPages - 2) {
+        items.push("ellipsis");
+        for (let i = totalPages - 1; i <= totalPages; i++) {
+          items.push(i);
+        }
+      } else {
+        items.push("ellipsis");
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          items.push(i);
+        }
+        items.push("ellipsis");
+        items.push(totalPages);
+      }
+    }
+
+    return items;
+  };
+
+  if (isLoading || isFetching) {
     return <LoadingSpinner />;
   }
 
   return (
     <div className="container mx-auto">
       <title>All Drivers | Cabsy </title>
+      <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        {/* Search */}
+        <Input
+          type="text"
+          placeholder="Search by vehicle model..."
+          value={search}
+          onChange={handleSearchChange}
+          className="md:w-1/3"
+        />
+
+        <div className="flex items-center gap-3">
+          {/* Sort Field */}
+          <Select
+            value={sortField}
+            onValueChange={(value) => setSortField(value as keyof IAllDrivers)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select Sort Field" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Sort Fields</SelectLabel>
+                <SelectItem value="createdAt">Created At</SelectItem>
+                <SelectItem value="isAvailable">Status</SelectItem>
+                <SelectItem value="vehicleInfo.model">Model</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+
+          {/* Sort Order */}
+          <Select
+            value={sortOrder}
+            onValueChange={(value) => setSortOrder(value as "asc" | "desc")}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Sort By..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Sort Option</SelectLabel>
+                <SelectItem value="asc">Ascending</SelectItem>
+                <SelectItem value="desc">Descending</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+
+          {/* Limit */}
+          <Select
+            value={String(limit)}
+            onValueChange={(value) => setLimit(Number(value))}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Limit..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Sort Option</SelectLabel>
+                <SelectItem value="5">5</SelectItem>
+                <SelectItem value="10">10</SelectItem>
+                <SelectItem value="20">20</SelectItem>
+                <SelectItem value="50">50</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
       <div className="rounded-lg border shadow-sm">
         <Table>
           <TableCaption className="my-2">
@@ -227,22 +388,60 @@ const DriverControl = () => {
       </div>
 
       {/* Pagination */}
-      {allDrivers?.length > 0 && (
+      {meta && meta.totalDocs > 0 && (
         <div className="mt-4 flex items-center justify-between">
           <div className="text-muted-foreground text-sm">
-            Showing {allDrivers?.length} drivers
+            Showing {(page - 1) * limit + 1}–
+            {Math.min(page * limit, meta.totalDocs)} of {meta.totalDocs} drivers
           </div>
-          <div className="flex space-x-2">
-            <Button variant="outline" size="sm" disabled>
-              Previous
-            </Button>
-            <Button variant="outline" size="sm">
-              Next
-            </Button>
+          <div>
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => handlePageChange(page - 1)}
+                    className={
+                      page === 1
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
+                  />
+                </PaginationItem>
+
+                {generatePaginationItems().map((item, index) => (
+                  <PaginationItem key={index}>
+                    {item === "ellipsis" ? (
+                      <PaginationEllipsis />
+                    ) : (
+                      <PaginationLink
+                        onClick={() => handlePageChange(item as number)}
+                        isActive={item === page}
+                        className={`bg-secondary cursor-pointer ${cn({
+                          "border-foreground": item === page,
+                          "text-muted-foreground": item !== page,
+                        })}`}
+                      >
+                        {item}
+                      </PaginationLink>
+                    )}
+                  </PaginationItem>
+                ))}
+
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() => handlePageChange(page + 1)}
+                    className={
+                      page === meta.totalPages
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </div>
         </div>
       )}
-
       {/* Driver Details Dialog */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-lg">
