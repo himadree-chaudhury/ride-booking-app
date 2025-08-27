@@ -4,14 +4,16 @@ import WhyUs from "@/components/modules/Features/WhyUs";
 const Features = () => {
     return (
       <div>
+        <title>Features | Cabsy</title>
+
         <Heading
           title={"ADVANTAGES"}
           heading={"Why Choose Us?"}
           description={
             "We present many guarantees and advantages when you rent a car with us for your trip"
           }
-            />
-            <WhyUs/>
+        />
+        <WhyUs />
       </div>
     );
 };

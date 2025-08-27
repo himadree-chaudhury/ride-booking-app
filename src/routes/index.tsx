@@ -8,7 +8,7 @@ import Features from "@/pages/Features";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
-import Booking from "@/pages/rider/Booking";
+import Unauthorized from "@/pages/Unauthorized";
 import type { TUserRole } from "@/types/user-type";
 import authVerification from "@/utils/authVerification";
 import { generateRoutes } from "@/utils/generateRoute";
@@ -17,12 +17,12 @@ import { createBrowserRouter, Navigate } from "react-router";
 import { adminSidebarRoutes } from "./adminSidebarRoutes";
 import { driverSidebarRoutes } from "./driverSidebarRoutes";
 import { riderSidebarRoutes } from "./riderSidebarRoutes";
-import Unauthorized from "@/pages/Unauthorized";
-import RideHistory from "@/pages/common/RideHistory";
 
 const DashboardLayout = lazy(
   () => import("@/components/layout/DashboardLayout"),
 );
+const RideHistory = lazy(() => import("@/pages/common/RideHistory"));
+const Booking = lazy(() => import("@/pages/rider/Booking"));
 
 export const routes = createBrowserRouter([
   {
@@ -68,10 +68,6 @@ export const routes = createBrowserRouter([
         path: "booking",
         Component: authVerification(Booking, UserRole.RIDER as TUserRole),
       },
-      // {
-      //   path: "ride-details/:id",
-      //   Component: authVerification(RideHistory, UserRole.RIDER as TUserRole),
-      // },
       {
         path: "unauthorized",
         Component: Unauthorized,
@@ -85,6 +81,10 @@ export const routes = createBrowserRouter([
       {
         index: true,
         element: <Navigate to="/admin/profile" />,
+      },
+      {
+        path: "/admin/ride-details/:rideId",
+        Component: RideHistory,
       },
       ...generateRoutes(adminSidebarRoutes),
     ],

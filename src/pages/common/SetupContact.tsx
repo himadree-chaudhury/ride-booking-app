@@ -104,7 +104,8 @@ const SetupContact = () => {
   };
 
   return (
-    <div className="mx-auto max-w-2xl">
+      <div className="mx-auto max-w-2xl">
+          <title>Emergency Contacts | Cabsy</title>
       <p className="text-muted-foreground mb-4 text-sm">
         Emergency contacts are essential in critical situations. These contacts
         will be notified in case of an emergency. But they can only be accessed

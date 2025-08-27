@@ -1,4 +1,6 @@
 import { baseApi } from "@/redux/baseApi";
+import type { IResponse } from "@/types/response.type";
+import type { IRide } from "@/types/ride-type";
 
 export const rideApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -15,10 +17,24 @@ export const rideApi = baseApi.injectEndpoints({
         method: "PATCH",
       }),
     }),
-    getAllRides: builder.query({
-      query: () => ({
+    getAllRides: builder.query<
+      IResponse<IRide[]>,
+      {
+        page: number;
+        limit: number;
+        sort: keyof IRide;
+        order: "asc" | "desc";
+      }
+    >({
+      query: ({ page, limit, sort, order}) => ({
         url: "/ride/all",
         method: "GET",
+        params: {
+          page,
+          limit,
+          sort,
+          order,
+        },
       }),
     }),
     getRideDetails: builder.query({

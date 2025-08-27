@@ -48,7 +48,7 @@ const Unauthorized = () => {
           ease: "easeInOut",
         }}
       >
-        401
+        403
       </motion.div>
 
       {/* Title */}
@@ -56,8 +56,8 @@ const Unauthorized = () => {
 
       {/* Description */}
       <motion.p variants={item} className="mb-8 max-w-md text-lg">
-        You don’t have permission to view this page. Please contact your
-        administrator.
+        It looks like you don’t have access to this page. If you think you
+        should, please reach out to your administrator.
       </motion.p>
 
       {/* Back Button */}

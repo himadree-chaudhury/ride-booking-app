@@ -3,6 +3,7 @@ import Heading from "@/components/modules/common/Heading";
 const About = () => {
   return (
     <div>
+      <title>About | Cabsy</title>
 
       <Heading
         title={"WHO WE ARE"}

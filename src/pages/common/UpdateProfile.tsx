@@ -69,7 +69,9 @@ export function UpdateProfile({
     try {
       await updateUser(userInfo).unwrap();
       toast.success("User updated successfully", { id: toastId });
-      navigate("/rider/profile");
+      if (user?.role) {
+        navigate(`/${user.role.toLowerCase()}/profile`);
+      }
     } catch (error: unknown) {
       const err = (error as unknown as { data: IResponseError }).data;
       toast.error(`${err.status}: ${err.message}`, { id: toastId });
@@ -81,6 +83,7 @@ export function UpdateProfile({
       className={cn("mx-auto flex max-w-sm flex-col gap-6", className)}
       {...props}
     >
+      <title>Update Profile | Cabsy</title>
       {!user?.isVerified ? (
         <p className="text-destructive text-center text-sm">
           Your profile is not verified. Please verify your profile to continue.

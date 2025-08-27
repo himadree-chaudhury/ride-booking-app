@@ -2,10 +2,10 @@ import AllRides from "@/pages/common/AllRides";
 import Profile from "@/pages/common/Profile";
 import SetupContact from "@/pages/common/SetupContact";
 import { UpdateProfile } from "@/pages/common/UpdateProfile";
+import VerifyProfile from "@/pages/common/VerifyProfile";
 import Analytics from "@/pages/rider/Analytics";
 import Booking from "@/pages/rider/Booking";
 import { RequestToBeDriver } from "@/pages/rider/RequestToBeDriver";
-import VerifyProfile from "@/pages/rider/VerifyProfile";
 import type { ISidebarRoute } from "@/types/route-type";
 
 export const riderSidebarRoutes: ISidebarRoute[] = [
