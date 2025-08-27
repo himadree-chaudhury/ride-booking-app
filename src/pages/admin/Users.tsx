@@ -35,8 +35,8 @@ const Users = () => {
   const { data: stats, isLoading } = useUserStatsQuery(undefined);
   const userStats: IUserStats = stats?.data;
   const { data: usersData, isLoading: isLoadingUsers } =
-    useGetAllUsersQuery(undefined);
-  const allUsers: IAllUsers[] = usersData?.data;
+    useGetAllUsersQuery({});
+  const allUsers: IAllUsers[] = usersData?.data || [];
 
   const weeklyUserData = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
     (day) => ({

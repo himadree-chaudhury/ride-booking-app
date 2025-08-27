@@ -548,7 +548,7 @@ const DriverControl = () => {
                       <CheckCircle className="mr-2 h-4 w-4" />
                     )}
                     {selectedDriver.isApproved
-                      ? "Unapprove Driver"
+                      ? "Disapprove Driver"
                       : "Approve Driver"}
                   </Button>
                   <Button

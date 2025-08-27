@@ -16,17 +16,46 @@ export const rideApi = baseApi.injectEndpoints({
         url: `/ride/cancel/${rideId}`,
         method: "PATCH",
       }),
+      invalidatesTags: ["Rides"],
+    }),
+    acceptRide: builder.mutation({
+      query: (rideId) => ({
+        url: `/ride/accept/${rideId}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Rides"],
+    }),
+    pickupRide: builder.mutation({
+      query: (rideId) => ({
+        url: `/ride/pickup/${rideId}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Rides"],
+    }),
+    transitRide: builder.mutation({
+      query: (rideId) => ({
+        url: `/ride/transit/${rideId}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Rides"],
+    }),
+    completeRide: builder.mutation({
+      query: (rideId) => ({
+        url: `/ride/complete/${rideId}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Rides"],
     }),
     getAllRides: builder.query<
       IResponse<IRide[]>,
       {
-        page: number;
-        limit: number;
-        sort: keyof IRide;
-        order: "asc" | "desc";
+        page?: number;
+        limit?: number;
+        sort?: keyof IRide;
+        order?: "asc" | "desc";
       }
     >({
-      query: ({ page, limit, sort, order}) => ({
+      query: ({ page, limit, sort, order }) => ({
         url: "/ride/all",
         method: "GET",
         params: {
@@ -36,6 +65,7 @@ export const rideApi = baseApi.injectEndpoints({
           order,
         },
       }),
+      providesTags: ["Rides"],
     }),
     getRideDetails: builder.query({
       query: (id) => ({
@@ -49,6 +79,10 @@ export const rideApi = baseApi.injectEndpoints({
 export const {
   useRequestRideMutation,
   useCancelRideMutation,
+  useAcceptRideMutation,
+  usePickupRideMutation,
+  useTransitRideMutation,
+  useCompleteRideMutation,
   useGetAllRidesQuery,
   useGetRideDetailsQuery,
 } = rideApi;

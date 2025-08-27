@@ -16,6 +16,7 @@ import {
 } from "@/redux/features/user.api";
 import type { IResponseError } from "@/types/error-type";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -51,11 +52,23 @@ export function UpdateProfile({
   const form = useForm<z.infer<typeof updateSchema>>({
     resolver: zodResolver(updateSchema),
     defaultValues: {
-      name: user?.name,
-      phone: user?.phone,
-      picture: user?.picture,
+      name: "",
+      phone: "",
+      picture: "",
     },
   });
+
+  const { reset } = form;
+
+  useEffect(() => {
+    if (user) {
+      reset({
+        name: user.name,
+        phone: user.phone,
+        picture: user.picture,
+      });
+    }
+  }, [user, reset]);
 
   // *Form submission handler
   const onSubmit = async (data: z.infer<typeof updateSchema>) => {

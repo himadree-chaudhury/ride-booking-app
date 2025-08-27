@@ -260,13 +260,13 @@ const AllRides = () => {
                     <div className="max-w-[200px]">
                       <div className="truncate text-sm">
                         <span className="font-medium">Pickup:</span>{" "}
-                        {ride?.pickupLocation.latitude},{" "}
-                        {ride?.pickupLocation.longitude}
+                        {ride?.pickupLocation.latitude.toFixed(2)},{" "}
+                        {ride?.pickupLocation.longitude.toFixed(2)}
                       </div>
                       <div className="truncate text-sm">
                         <span className="font-medium">Dropoff:</span>{" "}
-                        {ride?.destinationLocation.latitude},{" "}
-                        {ride?.destinationLocation.longitude}
+                        {ride?.destinationLocation.latitude.toFixed(2)},{" "}
+                        {ride?.destinationLocation.longitude.toFixed(2)}
                       </div>
                     </div>
                   </TableCell>

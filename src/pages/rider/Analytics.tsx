@@ -73,13 +73,13 @@ const Analytics = () => {
   const fareTrendData = riderStats?.myAllRides?.reduce(
     (acc: Record<string, number>, ride) => {
       const date = new Date(ride.createdAt);
-      const month = date.toLocaleString("en-US", { month: "short" }); // e.g. "Jan"
+      const month = date.toLocaleString("en-US", { month: "short" }); 
 
       if (!acc[month]) {
         acc[month] = 0;
       }
 
-      acc[month] += ride.fare; // assuming each ride has a `fare` field
+      acc[month] += ride.fare;
 
       return acc;
     },

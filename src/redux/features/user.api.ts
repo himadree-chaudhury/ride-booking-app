@@ -59,6 +59,13 @@ export const userApi = baseApi.injectEndpoints({
       }),
       providesTags: ["User"],
     }),
+    contact: builder.mutation({
+      query: (formData) => ({
+        url: "/user/contact",
+        method: "POST",
+        data: formData,
+      }),
+    }),
   }),
 });
 
@@ -71,4 +78,5 @@ export const {
   useVerifyRequestMutation,
   useVerifyUserMutation,
   useGetUserQuery,
+  useContactMutation,
 } = userApi;

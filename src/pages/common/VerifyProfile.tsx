@@ -70,8 +70,8 @@ export default function VerifyProfile() {
         setTimer(120);
       }
     } catch (error: unknown) {
-          const err = (error as unknown as { data: IResponseError }).data;
-          toast.error(`${err.status}: ${err.message}`, { id: toastId });
+      const err = (error as unknown as { data: IResponseError }).data;
+      toast.error(`${err.status}: ${err.message}`, { id: toastId });
     }
   };
 
@@ -93,13 +93,6 @@ export default function VerifyProfile() {
     }
   };
 
-  //! Needed - Turned off for development
-  //   useEffect(() => {
-  //     if (!email) {
-  //       navigate("/");
-  //     }
-  //   }, [email]);
-
   useEffect(() => {
     if (!confirmed) {
       return;
@@ -114,6 +107,7 @@ export default function VerifyProfile() {
 
   return (
     <div className="grid place-content-center">
+      <title>Verify Profile | Cabsy</title>
       {confirmed ? (
         <Card>
           <CardHeader>

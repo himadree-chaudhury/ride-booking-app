@@ -5,8 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useGetRideDetailsQuery } from "@/redux/features/ride.api";
 import type { IRide, RideStatus } from "@/types/ride-type";
+import { getLocationName } from "@/utils/location";
 import {
   AlertCircle,
+  ArrowLeft,
   Calendar,
   Clock,
   DollarSign,
@@ -18,8 +20,6 @@ import { useEffect, useState } from "react";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import { useParams } from "react-router";
 import { RouteHandler } from "../rider/Booking";
-import { getLocationName } from "@/utils/location";
-
 
 const RideHistory = () => {
   const { rideId } = useParams<{ rideId: string }>();
@@ -31,7 +31,6 @@ const RideHistory = () => {
   const [destinationLocationName, setDestinationLocationName] =
     useState<string>("");
   const [isLoadingLocations, setIsLoadingLocations] = useState<boolean>(true);
-
 
   // Fetch location names when ride details are available
   useEffect(() => {
@@ -130,6 +129,7 @@ const RideHistory = () => {
     <div className="container mx-auto space-y-6 pb-6">
       <div className="flex items-center justify-between">
         <Button variant="outline" onClick={() => window.history.back()}>
+          <ArrowLeft className="mr-2"></ArrowLeft>
           Back to Rides
         </Button>
       </div>
@@ -179,6 +179,19 @@ const RideHistory = () => {
                     </p>
                   </div>
                 </div>
+                {rideDetails?.acceptedAt && (
+                  <div className="space-y-1">
+                    <p className="text-muted-foreground text-sm">
+                      Accepted At
+                    </p>
+                    <div className="flex items-center">
+                      <Clock className="text-muted-foreground mr-2 h-4 w-4" />
+                      <p className="font-medium">
+                        {formatDate(rideDetails?.acceptedAt)}
+                      </p>
+                    </div>
+                  </div>
+                )}
                 {rideDetails?.pickedUpAt && (
                   <div className="space-y-1">
                     <p className="text-muted-foreground text-sm">
@@ -430,7 +443,7 @@ const RideHistory = () => {
               <Button variant="outline" className="w-full">
                 Report Issue
               </Button>
-              {rideDetails?.status === "completed" && (
+              {rideDetails?.status === "COMPLETED" && (
                 <Button variant="outline" className="w-full">
                   Rate Ride
                 </Button>

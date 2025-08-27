@@ -1,4 +1,4 @@
-import Stepper, { Step } from "@/components/ui/Stepper";
+import Stepper, { Step } from "@/components/ui/flow";
 import { FaCalendarCheck, FaMapLocationDot, FaTrophy } from "react-icons/fa6";
 
 const Steps = () => {
@@ -21,11 +21,7 @@ const Steps = () => {
   ];
   return (
     <div>
-      <Stepper
-        initialStep={1}
-        backButtonText="Previous"
-        nextButtonText="Next"
-      >
+      <Stepper initialStep={1} backButtonText="Previous" nextButtonText="Next">
         {steps.map((step, index) => (
           <Step key={index}>
             <div className="flex items-center">

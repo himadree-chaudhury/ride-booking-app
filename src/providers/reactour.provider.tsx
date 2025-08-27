@@ -1,6 +1,7 @@
 import { TourProvider, useTour } from "@reactour/tour";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 import {
+  ArrowLeftFromLine,
   DraftingCompass,
   Frame,
   PanelsTopLeft,
@@ -18,7 +19,7 @@ const steps = [
       <div>
         <div className="mb-2 flex items-center gap-2">
           <DraftingCompass />
-          <h3>Step 1 of 6</h3>
+          <h3>Step 1 of 7</h3>
         </div>
         <p>Click here to open or close the sidebar navigation.</p>
       </div>
@@ -30,7 +31,7 @@ const steps = [
       <div>
         <div className="mb-2 flex items-center gap-2">
           <Split />
-          <h3>Step 2 of 6</h3>
+          <h3>Step 2 of 7</h3>
         </div>
         <p>The breadcrumb shows your current location in the app.</p>
       </div>
@@ -42,9 +43,21 @@ const steps = [
       <div>
         <div className="mb-2 flex items-center gap-2">
           <RectangleGoggles />
-          <h3>Step 3 of 6</h3>
+          <h3>Step 3 of 7</h3>
         </div>
         <p>Toggle between light and dark modes for a better experience.</p>
+      </div>
+    ),
+  },
+  {
+    selector: ".logout",
+    content: (
+      <div>
+        <div className="mb-2 flex items-center gap-2">
+          <ArrowLeftFromLine />
+          <h3>Step 4 of 7</h3>
+        </div>
+        <p>Click here to log out of your account.</p>
       </div>
     ),
   },
@@ -54,7 +67,7 @@ const steps = [
       <div>
         <div className="mb-2 flex items-center gap-2">
           <Frame />
-          <h3>Step 4 of 6</h3>
+          <h3>Step 5 of 7</h3>
         </div>
         <p>Click here to return to the dashboard home page.</p>
       </div>
@@ -66,7 +79,7 @@ const steps = [
       <div>
         <div className="mb-2 flex items-center gap-2">
           <PanelsTopLeft />
-          <h3>Step 5 of 6</h3>
+          <h3>Step 6 of 7</h3>
         </div>
         <p>Explore the collapsible menu to access different features.</p>
       </div>
@@ -78,7 +91,7 @@ const steps = [
       <div>
         <div className="mb-2 flex items-center gap-2">
           <Route />
-          <h3>Step 6 of 6</h3>
+          <h3>Step 7 of 7</h3>
         </div>
         <p>Click here to start the guided tour when needed.</p>
       </div>
