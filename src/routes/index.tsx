@@ -1,14 +1,4 @@
-import App from "@/App";
 import { UserRole } from "@/constants/role";
-import About from "@/pages/About";
-import Contact from "@/pages/Contact";
-import Error from "@/pages/Error";
-import Faq from "@/pages/Faq";
-import Features from "@/pages/Features";
-import Home from "@/pages/Home";
-import Login from "@/pages/Login";
-import Register from "@/pages/Register";
-import Unauthorized from "@/pages/Unauthorized";
 import type { TUserRole } from "@/types/user-type";
 import authVerification from "@/utils/authVerification";
 import { generateRoutes } from "@/utils/generateRoute";
@@ -18,6 +8,17 @@ import { adminSidebarRoutes } from "./adminSidebarRoutes";
 import { driverSidebarRoutes } from "./driverSidebarRoutes";
 import { riderSidebarRoutes } from "./riderSidebarRoutes";
 
+// Lazy imports
+const App = lazy(() => import("@/App"));
+const About = lazy(() => import("@/pages/About"));
+const Contact = lazy(() => import("@/pages/Contact"));
+const Error = lazy(() => import("@/pages/Error"));
+const Faq = lazy(() => import("@/pages/Faq"));
+const Features = lazy(() => import("@/pages/Features"));
+const Home = lazy(() => import("@/pages/Home"));
+const Login = lazy(() => import("@/pages/Login"));
+const Register = lazy(() => import("@/pages/Register"));
+const Unauthorized = lazy(() => import("@/pages/Unauthorized"));
 const DashboardLayout = lazy(
   () => import("@/components/layout/DashboardLayout"),
 );
@@ -77,6 +78,7 @@ export const routes = createBrowserRouter([
   {
     path: "/admin",
     Component: authVerification(DashboardLayout, UserRole.ADMIN as TUserRole),
+    errorElement: <Error />,
     children: [
       {
         index: true,
@@ -92,10 +94,15 @@ export const routes = createBrowserRouter([
   {
     path: "/driver",
     Component: authVerification(DashboardLayout, UserRole.DRIVER as TUserRole),
+    errorElement: <Error />,
     children: [
       {
         index: true,
         element: <Navigate to="/driver/profile" />,
+      },
+      {
+        path: "/driver/ride-details/:rideId",
+        Component: RideHistory,
       },
       ...generateRoutes(driverSidebarRoutes),
     ],
@@ -103,6 +110,7 @@ export const routes = createBrowserRouter([
   {
     path: "/rider",
     Component: authVerification(DashboardLayout, UserRole.RIDER as TUserRole),
+    errorElement: <Error />,
     children: [
       {
         index: true,

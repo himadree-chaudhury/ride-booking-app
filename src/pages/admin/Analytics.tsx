@@ -35,9 +35,10 @@ import {
 
 const Analytics = () => {
   const { data: stats, isLoading } = useAdminStatsQuery(undefined);
-  const { data: ridesData, isLoading: isLoadingRides } =
-    useGetAllRidesQuery(undefined);
-  const ridesStats: IRide[] = ridesData?.data;
+  const { data: ridesData, isLoading: isLoadingRides } = useGetAllRidesQuery(
+    {},
+  );
+  const ridesStats: IRide[] = ridesData?.data || [];
   const adminStats: IAdminStats = stats?.data;
 
   const weeklyRideData = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(

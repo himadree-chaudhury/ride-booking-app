@@ -20,10 +20,10 @@ export const rideApi = baseApi.injectEndpoints({
     getAllRides: builder.query<
       IResponse<IRide[]>,
       {
-        page: number;
-        limit: number;
-        sort: keyof IRide;
-        order: "asc" | "desc";
+        page?: number;
+        limit?: number;
+        sort?: keyof IRide;
+        order?: "asc" | "desc";
       }
     >({
       query: ({ page, limit, sort, order}) => ({

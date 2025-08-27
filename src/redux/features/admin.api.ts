@@ -7,11 +7,11 @@ const adminApi = baseApi.injectEndpoints({
     getAllUsers: builder.query<
       IResponse<IAllUsers[]>,
       {
-        page: number;
-        limit: number;
-        sort: keyof IAllUsers;
-        order: "asc" | "desc";
-        searchTerm: string;
+        page?: number;
+        limit?: number;
+        sort?: keyof IAllUsers;
+        order?: "asc" | "desc";
+        searchTerm?: string;
       }
     >({
       query: ({ page, limit, sort, order, searchTerm }) => ({
@@ -45,11 +45,11 @@ const adminApi = baseApi.injectEndpoints({
     getAllDrivers: builder.query<
       IResponse<IAllDrivers[]>,
       {
-        page: number;
-        limit: number;
-        sort: keyof IAllDrivers;
-        order: "asc" | "desc";
-        searchTerm: string;
+        page?: number;
+        limit?: number;
+        sort?: keyof IAllDrivers;
+        order?: "asc" | "desc";
+        searchTerm?: string;
       }
     >({
       query: ({ page, limit, sort, order, searchTerm }) => ({

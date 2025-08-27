@@ -41,7 +41,6 @@ const Navbar = () => {
     { label: "Features", href: "/features" },
     { label: "Contact", href: "/contact" },
     { label: "FAQ", href: "/faq" },
-    { label: "Book Ride", href: "/booking" },
     {
       label: userData ? "Sign Out" : "Sign In",
       href: userData ? "#" : "/sign-in",
@@ -57,7 +56,10 @@ const Navbar = () => {
       navItems.push({ label: "Driver Dashboard", href: "/driver" });
     } else if (userData.role === UserRole.RIDER) {
       navItems.push({ label: "My Account", href: "/rider" });
+      navItems.push({ label: "Book Ride", href: "/booking" });
     }
+  } else {
+    navItems.push({ label: "Book Ride", href: "/booking" });
   }
 
   return (

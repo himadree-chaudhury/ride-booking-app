@@ -35,8 +35,8 @@ const Drivers = () => {
   const { data: stats, isLoading } = useDriverStatsQuery(undefined);
   const driverStats: IDriverStats = stats?.data;
   const { data: driversData, isLoading: isLoadingUsers } =
-    useGetAllDriversQuery(undefined);
-  const allDrivers: IAllDrivers[] = driversData?.data;
+    useGetAllDriversQuery({});
+  const allDrivers: IAllDrivers[] = driversData?.data || [];
 
   const weeklyDriverData = [
     "Sun",

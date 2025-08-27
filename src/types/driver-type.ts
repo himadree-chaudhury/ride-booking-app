@@ -9,9 +9,19 @@ export interface IDriverRegistration {
         number: string;
         expirationDate: string;
     };
-    isAvailable: boolean;
+    isAvailable?: boolean;
     currentLocation: {
         latitude: number;
         longitude: number;
     };
+}
+
+export interface IDriver extends IDriverRegistration {
+  _id?: string;
+  userId: string;
+  rating: number;
+  createdAt: string;
+  updatedAt: string;
+  isApproved: boolean;
+  isSuspended: boolean;
 }

@@ -5,8 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useGetRideDetailsQuery } from "@/redux/features/ride.api";
 import type { IRide, RideStatus } from "@/types/ride-type";
+import { getLocationName } from "@/utils/location";
 import {
   AlertCircle,
+  ArrowLeft,
   Calendar,
   Clock,
   DollarSign,
@@ -18,8 +20,6 @@ import { useEffect, useState } from "react";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import { useParams } from "react-router";
 import { RouteHandler } from "../rider/Booking";
-import { getLocationName } from "@/utils/location";
-
 
 const RideHistory = () => {
   const { rideId } = useParams<{ rideId: string }>();
@@ -31,7 +31,6 @@ const RideHistory = () => {
   const [destinationLocationName, setDestinationLocationName] =
     useState<string>("");
   const [isLoadingLocations, setIsLoadingLocations] = useState<boolean>(true);
-
 
   // Fetch location names when ride details are available
   useEffect(() => {
@@ -80,7 +79,9 @@ const RideHistory = () => {
         <p className="text-muted-foreground mb-4">
           The ride you're looking for doesn't exist.
         </p>
-        <Button onClick={() => window.history.back()}>Go Back</Button>
+        <Button onClick={() => window.history.back()}>
+          Go Back
+        </Button>
       </div>
     );
   }
@@ -130,6 +131,7 @@ const RideHistory = () => {
     <div className="container mx-auto space-y-6 pb-6">
       <div className="flex items-center justify-between">
         <Button variant="outline" onClick={() => window.history.back()}>
+          <ArrowLeft className="mr-2"></ArrowLeft>
           Back to Rides
         </Button>
       </div>

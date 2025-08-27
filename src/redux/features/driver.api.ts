@@ -7,8 +7,22 @@ export const driverApi = baseApi.injectEndpoints({
         url: "/driver/register",
         method: "POST",
         data: riderData,
-        }),
-        invalidatesTags: ["Driver"],
+      }),
+    }),
+    updateDriver: builder.mutation({
+      query: (driverData) => ({
+        url: `/driver/update`,
+        method: "PATCH",
+        data: driverData,
+      }),
+      invalidatesTags: ["Driver"],
+    }),
+    updateDriverAvailability: builder.mutation({
+      query: () => ({
+        url: `/driver/availability`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Driver"],
     }),
     getDriver: builder.query({
       query: () => ({
@@ -20,4 +34,4 @@ export const driverApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useCreateDriverMutation, useGetDriverQuery } = driverApi;
+export const { useCreateDriverMutation, useUpdateDriverMutation,useUpdateDriverAvailabilityMutation, useGetDriverQuery } = driverApi;
